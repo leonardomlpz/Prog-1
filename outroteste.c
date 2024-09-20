@@ -1,10 +1,24 @@
 #include <stdio.h>
+
+
 int main(){
-    int x,y;
-
-    printf ("Digite os numeros a serem mukltiplicados: ");
-    scanf ("%d %d", &x, &y);
-    printf ("%d multiplicado por %d resulta em %d\n", y, x, x *y);
-
-    return 0;
+    int a,b;
+    scanf ("%d %d", &a, &b);
+    while ((a != 0) && (b != 0))
+  {
+    if (a > b){
+      a = (a % b);
+    }
+    else
+    {
+      b = (b % a);
+    }
+    if (a == 0){
+      printf ("%d\n", b);
+    }
+    else if (b == 0){
+      printf ("%d\n", a);
+    }
+  }
+  return 0;
 }
