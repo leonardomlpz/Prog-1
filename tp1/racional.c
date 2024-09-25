@@ -20,33 +20,12 @@
  * somente neste arquivo.
 */
 
-struct racional {
-  long num;          /* numerador   */
-  long den;          /* denominador */
-}
-
-struct racional r;
 
 int valido_r (struct racional r)
 {
   if (r.den != 0) /*colocar expressao usando struct*/
     return 1;
   else return 0;  /*retorna 0 se for invalido*/
-}
-
-struct racional sorteia_r (long min, long max)
-{
-  r.num  = aleat(min,max);
-  r.den = aleat(min,max);
-  /*return o numero simplificado funcao*/
-  return simplifica_r(struct racional r);
-}
-
-
-/* retorna um número aleatório entre min e max, inclusive. */
-long aleat (long min, long max)
-{
-  return rand() % (max - min + 1) + min;
 }
 
 /* Máximo Divisor Comum entre a e b      */
@@ -67,17 +46,6 @@ long mdc (long a, long b)
   return -1;
 }
 
-/* Mínimo Múltiplo Comum entre a e b */
-/* mmc = (a * b) / mdc (a, b)        */
-long mmc (long a, long b)
-{
-  long resultado_mdc = mdc(a, b);
-  if (resultado_mdc < 0)
-    return -1;
-  
-  return ((a * b) / mdc (a, b));
-}
-
 /* Recebe um número racional e o simplifica.
  * Por exemplo, ao receber 10/8 deve retornar 5/4.
  * Se ambos numerador e denominador forem negativos, deve retornar um positivo.
@@ -88,7 +56,42 @@ struct racional simplifica_r (struct racional r)
   long maior_multiplo = mdc(r.num, r.den);
   r.num = r.num / maior_multiplo;
   r.den = r.den / maior_multiplo;
+  return r;
 }
+
+/* retorna um número aleatório entre min e max, inclusive. */
+long aleat (long min, long max)
+{
+  return rand() % (max - min + 1) + min;
+}
+
+struct racional sorteia_r (long min, long max)
+{
+  struct racional r;
+  long numerador,denominador;
+
+  numerador = aleat(min, max);
+  denominador = aleat(min, max); 
+  r = cria_r (numerador, denominador);
+  r = simplifica_r(r);
+  /*return o numero simplificado funcao*/
+  return r;
+}
+
+
+/* Mínimo Múltiplo Comum entre a e b */
+/* mmc = (a * b) / mdc (a, b)        */
+long mmc (long a, long b)
+{
+  long resultado_mdc;
+
+  resultado_mdc = mdc(a, b);
+  if (resultado_mdc < 0)
+    return -1;
+  else
+  return ((a * b) / mdc (a, b));
+}
+
 
 void imprime_r (struct racional r)
 {
@@ -102,7 +105,8 @@ void imprime_r (struct racional r)
     printf ("%ld", r.num);
   else if (r.num == r.den)
     printf ("1");
-  else if ((r.den < 0) && ((r.num < 0) || (r.num < 0))){
+  else if ((r.den < 0) && ((r.num < 0) || (r.num < 0)))
+  {
     r.den = r.den * -1;
     r.num = r.num * -1;
     /*testa se o numerador e denominador sao negativos
@@ -117,6 +121,39 @@ struct racional cria_r (long numerador, long denominador)
   struct racional r;
   r.num = numerador;
   r.den = denominador;
+  return r;
+}
+
+struct racional soma_r (struct racional r1, struct racional r2)
+{
+  struct racional r;
+  r.num = r1.num*r2.den + r2.num*r1.den;
+  r.den = r1.den*r2.den;
+  return r;
+}
+
+struct racional subtrai_r (struct racional r1, struct racional r2)
+{
+  struct racional r;
+
+  r.num = r1.num*r2.den - r2.num*r1.den;
+  r.den = r1.den*r2.den;
+  return r;
+}
+
+struct racional multiplica_r (struct racional r1, struct racional r2)
+{
+  struct racional r;
+  r.num = r1.num*r2.num;
+  r.den = r1.den*r2.den;
+  return r;
+}
+
+struct racional divide_r (struct racional r1, struct racional r2)
+{
+  struct racional r;
+  r.num = r1.num*r2.den;
+  r.den = r1.den*r2.num;
   return r;
 }
 
