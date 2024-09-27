@@ -32,18 +32,14 @@ int valido_r (struct racional r)
 /* calcula o MDC pelo método de Euclides */
 long mdc (long a, long b)
 {
-  while ((a != 0) && (b != 0))
-  {
-    if (a > b)
-      a = a % b;
-    else
-      b = b % a;
-    if (a == 0)
-      return b;
-    else if (b == 0)
-      return a;
+while((a != 0) && (b != 0)){
+  if(a > b)
+    a = a % b;
+  else b = b % a;
   }
-  return -1;
+  if (a == 0)
+    return b;
+  else return a;
 }
 
 /* Recebe um número racional e o simplifica.
@@ -53,7 +49,7 @@ long mdc (long a, long b)
  * Se r for inválido, devolve-o sem simplificar. */
 struct racional simplifica_r (struct racional r)
 {
-  long maior_multiplo = mdc(r.num, r.den);
+  long maior_multiplo = mdc(labs(r.num), labs(r.den));
   r.num = r.num / maior_multiplo;
   r.den = r.den / maior_multiplo;
   return r;
@@ -95,17 +91,25 @@ long mmc (long a, long b)
 
 void imprime_r (struct racional r)
 {
-  simplifica_r (r);
+  r = simplifica_r (r);
 
-  if (r.den == 0)
-    printf ("INVALIDO");
-  else if (r.num == 0)
-    printf ("0");
-  else if (r.den == 1)
-    printf ("%ld", r.num);
-  else if (r.num == r.den)
-    printf ("1");
-  else if ((r.den < 0) && ((r.num < 0) || (r.num < 0)))
+  if (r.den == 0){
+    printf ("INVALIDO ");
+    return;
+    }
+  else if (r.num == 0){
+    printf ("0 ");
+    return;
+    }
+  else if (r.den == 1){
+    printf ("%ld ", r.num);
+    return;
+    }
+  else if (r.num == r.den){
+    printf ("1 ");
+    return;
+    }
+  else if (r.den < 0)
   {
     r.den = r.den * -1;
     r.num = r.num * -1;
@@ -113,7 +117,8 @@ void imprime_r (struct racional r)
     e inverte se forem*/
     /*tambem testa se apenas o den eh negativo*/
   }
-  printf ("%ld/%ld", r.num, r.den);
+  printf ("%ld/%ld ", r.num, r.den);
+  return;
 }
 
 struct racional cria_r (long numerador, long denominador)

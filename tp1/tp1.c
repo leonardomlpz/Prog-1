@@ -23,9 +23,7 @@ int main ()
 
   scanf ("%ld %ld", &n, &max);
 
-  printf ("%ld %ld", n, max);
-  for (i = 1; i < n; i++)
-  {
+  for (i = 1; i <= n; i++){
     printf ("%ld: ", i);
 
     r1 = sorteia_r (-max, max);
@@ -45,7 +43,7 @@ int main ()
     multiplicacao = multiplica_r (r1, r2);
     divisao = divide_r (r1, r2);
 
-    if (!valido_r (divisao))
+    if (valido_r (divisao) == 0)
     {
       printf ("DIVISAO INVALIDA\n");
       return 1;
