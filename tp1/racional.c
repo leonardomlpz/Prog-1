@@ -81,7 +81,7 @@ long mmc (long a, long b)
 {
   long resultado_mdc;
 
-  resultado_mdc = mdc(a, b);
+  resultado_mdc = mdc(labs(a), labs(b));
   if (resultado_mdc < 0)
     return -1;
   else
@@ -132,7 +132,9 @@ struct racional cria_r (long numerador, long denominador)
 struct racional soma_r (struct racional r1, struct racional r2)
 {
   struct racional r;
-  r.num = r1.num*r2.den + r2.num*r1.den;
+  long denominador_c;
+  denominador_c = mmc(labs(r1.den), labs(r2.den));
+  r.num = r1.num*(denominador_c/r1.den) + r2.num*(denominador_c/r1.den);
   r.den = r1.den*r2.den;
   return r;
 }
@@ -140,8 +142,9 @@ struct racional soma_r (struct racional r1, struct racional r2)
 struct racional subtrai_r (struct racional r1, struct racional r2)
 {
   struct racional r;
-
-  r.num = r1.num*r2.den - r2.num*r1.den;
+  long denominador_c;
+  denominador_c = mmc(labs(r1.den), labs(r2.den));
+  r.num = r1.num*(denominador_c/r1.den) - r2.num*(denominador_c/r1.den);
   r.den = r1.den*r2.den;
   return r;
 }
