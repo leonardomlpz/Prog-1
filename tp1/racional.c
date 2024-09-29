@@ -96,26 +96,27 @@ void imprime_r (struct racional r)
   if (r.den == 0){
     printf ("INVALIDO ");
     return;
-    }
-  else if (r.num == 0){
+  }
+  if (r.num == 0){
     printf ("0 ");
     return;
-    }
-  else if (r.den == 1){
-    printf ("%ld ", r.num);
-    return;
-    }
-  else if (r.num == r.den){
+  }
+  if (r.num == r.den){
     printf ("1 ");
     return;
-    }
-  else if (r.den < 0)
-  {
+  }
+  /* apenas inverte*/
+  if (r.den < 0)
+  { 
     r.den = r.den * -1;
     r.num = r.num * -1;
     /*testa se o numerador e denominador sao negativos
     e inverte se forem*/
     /*tambem testa se apenas o den eh negativo*/
+  }
+  if (r.den == 1){
+    printf ("%ld ", r.num);
+    return;
   }
   printf ("%ld/%ld ", r.num, r.den);
   return;
