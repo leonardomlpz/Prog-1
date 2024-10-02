@@ -6,13 +6,18 @@
 
 /* coloque aqui seus includes (primeiro os <...>, depois os "...") */
 #include <stdio.h>
+#include <stdlib.h>
+#include "racional.h"
 
 /* coloque aqui as funções auxiliares que precisar neste arquivo */
 
 /* programa principal */
 int main ()
 {
-  /* a completar! */
+  srand (0);
+
+  long i,n;
+  struct racional r;
 
   return (0) ;
 }

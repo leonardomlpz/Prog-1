@@ -20,21 +20,34 @@
 /* retorna um número aleatório entre min e max, inclusive. */
 long aleat (long min, long max)
 {
-  /* implemente aqui */
+  return rand() % (max - min + 1) + min;
 }
 
 /* Máximo Divisor Comum entre a e b      */
 /* calcula o MDC pelo método de Euclides */
 long mdc (long a, long b)
 {
-  /* implemente aqui */
+  while((a != 0) && (b != 0)){
+  if(a > b)
+    a = a % b;
+  else b = b % a;
+  }
+  if (a == 0)
+    return b;
+  else return a;
 }
 
 /* Mínimo Múltiplo Comum entre a e b */
 /* mmc = (a * b) / mdc (a, b)        */
 long mmc (long a, long b)
 {
-  /* implemente aqui */
+  long resultado_mdc;
+
+  resultado_mdc = mdc(labs(a), labs(b));
+  if (resultado_mdc < 0)
+    return -1;
+  else
+  return ((a * b) / mdc (a, b));
 }
 
 /* Recebe um número racional e o simplifica.
@@ -44,7 +57,71 @@ long mmc (long a, long b)
  * Se r for inválido, devolve-o sem simplificar. */
 struct racional simplifica_r (struct racional r)
 {
-  /* implemente aqui */
+  long maior_multiplo = mdc(labs(r.num), labs(r.den));
+  r.num = r.num / maior_multiplo;
+  r.den = r.den / maior_multiplo;
+  return r;
 }
 
 /* implemente as demais funções de racional.h aqui */
+
+struct racional simplifica_r (struct racional r)
+{
+  long maior_multiplo = mdc(labs(r.num), labs(r.den));
+  r.num = r.num / maior_multiplo;
+  r.den = r.den / maior_multiplo;
+  return r;
+}
+
+void imprime_r (struct racional r)
+{
+  r = simplifica_r (r);
+
+  if (r.den == 0){
+    printf ("INVALIDO ");
+    return;
+  }
+  if (r.num == 0){
+    printf ("0 ");
+    return;
+  }
+  if (r.num == r.den){
+    printf ("1 ");
+    return;
+  }
+  /* apenas inverte*/
+  if (r.den < 0)
+  { 
+    r.den = r.den * -1;
+    r.num = r.num * -1;
+    /*testa se o numerador e denominador sao negativos
+    e inverte se forem*/
+    /*tambem testa se apenas o den eh negativo*/
+  }
+  if (r.den == 1){
+    printf ("%ld ", r.num);
+    return;
+  }
+  printf ("%ld/%ld ", r.num, r.den);
+  return;
+}
+
+int valido_r (struct racional r)
+{
+  if (r.den != 0) /*colocar expressao usando struct*/
+    return 1;
+  else return 0;  /*retorna 0 se for invalido*/
+}
+
+int compara_r (struct racional r1, struct racional r2)
+{
+  if ((valido_r(r1 == 0)) || (valido_r(r2) == 0))
+    return -2;
+  if ((r1.num == r2.num)&&(r1.den == r2.den))
+    return 0;
+  if ((r1.num/r1.den)<(r2.num/r2.den))
+    return -1;
+  if ((r1.num/r1.den)>(r2.num/r2.den))
+    return 1;
+  /*completar comparacoes*/
+}
