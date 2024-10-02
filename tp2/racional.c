@@ -10,6 +10,8 @@
 
 /* coloque aqui seus includes (primeiro os <...>, depois os "...") */
 #include <stdio.h>
+#include <stdlib.h>
+#include "racional.h"
 
 /*
  * Implemente aqui as funcoes definidas no racionais.h; caso precise,
@@ -65,14 +67,6 @@ struct racional simplifica_r (struct racional r)
 
 /* implemente as demais funções de racional.h aqui */
 
-struct racional simplifica_r (struct racional r)
-{
-  long maior_multiplo = mdc(labs(r.num), labs(r.den));
-  r.num = r.num / maior_multiplo;
-  r.den = r.den / maior_multiplo;
-  return r;
-}
-
 void imprime_r (struct racional r)
 {
   r = simplifica_r (r);
@@ -115,7 +109,7 @@ int valido_r (struct racional r)
 
 int compara_r (struct racional r1, struct racional r2)
 {
-  if ((valido_r(r1 == 0)) || (valido_r(r2) == 0))
+  if ((valido_r(r1) == 0) || (valido_r(r2) == 0))
     return -2;
   if ((r1.num == r2.num)&&(r1.den == r2.den))
     return 0;
@@ -123,5 +117,25 @@ int compara_r (struct racional r1, struct racional r2)
     return -1;
   if ((r1.num/r1.den)>(r2.num/r2.den))
     return 1;
-  /*completar comparacoes*/
+}
+
+struct racional sorteia_r (long min, long max)
+{
+  struct racional r;
+  long numerador,denominador;
+
+  numerador = aleat(min, max);
+  denominador = aleat(min, max); 
+  r = cria_r (numerador, denominador);
+  r = simplifica_r(r);
+  /*return o numero simplificado funcao*/
+  return r;
+}
+
+struct racional cria_r (long numerador, long denominador)
+{
+  struct racional r;
+  r.num = numerador;
+  r.den = denominador;
+  return r;
 }
