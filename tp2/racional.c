@@ -139,3 +139,12 @@ struct racional cria_r (long numerador, long denominador)
   r.den = denominador;
   return r;
 }
+
+int soma_r (struct racional r1, struct racional r2, struct racional *r3)
+{
+  r3 -> num = r1.num*r2.den + r2.num*r1.den;
+  r3 -> den = r1.den*r2.den;
+  if (valido_r(r1)==0 || (valido_r(r2)==0) || r3 == NULL)
+    return 0;
+  return 1;
+}
