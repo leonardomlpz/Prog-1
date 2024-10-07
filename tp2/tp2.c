@@ -14,19 +14,19 @@
 /* programa principal */
 int main ()
 {
-  long i,n,numerador,denominador;
+  long i,n,tam,numerador,denominador;
   struct racional *r;
   struct racional vetor[99];
 
   scanf("%ld", &n);
-
+  tam = n;
   for(i = 0; i < n; i++)
   {
     scanf("%ld %ld", &numerador, &denominador);
     vetor[i] = cria_r(numerador, denominador);
   }
 
-  printf ("VEOTR =");
+  printf ("VETOR =");
 
   for (i = 0; i < n; i++)
   {
@@ -39,15 +39,22 @@ int main ()
   /*0eliminar os elemntos invalidos do vetor0*/
   for (i = 0; i < n; i++)
   {
-    if (vetor[i].den == 0)
+    if (valido_r(vetor[i]) == 0)
     {
-      for (int j = i; j < n - 1; j++)
-        vetor[j] = vetor[n];
-        n
+      for (int j = n - 1; j > 1 ; j--)
+      {
+        if(valido_r(vetor[j]) == 0)
+          tam--;
+        else {
+        vetor[i] = vetor[j];
+        n = j;
+        break;
+        }
+      }
     }
   }
-
-  printf ("VEOTR =");
+  n++;
+  printf ("VETOR =");
 
   for (i = 0; i < n; i++)
   {
@@ -71,7 +78,7 @@ int main ()
     }
   }
 
-  printf ("VEOTR =");
+  printf ("VETOR =");
 
   for (i = 0; i < n; i++)
   {
@@ -82,18 +89,13 @@ int main ()
   printf ("\n");
 
   /*0somar vetor0*/
-  struct racional soma={0,0};
-  for (i = 0; i < n - 5; i++)
+  struct racional soma={0,1};
+  for (i = 0; i < n - 1; i++)
   {
-    soma_r(vetor[i],vetor[i + 1],&r);
-    soma.num = soma.num + r->num;
+    soma_r(vetor[i],soma,&r);
   }
   printf ("SOMA = %ld/%ld", soma.num,soma.den);
-  for (i = 0; i < n; i++)
-  {
-    printf (" ");
-    imprime_r(vetor[i]);
-  }
+  
   printf("\n");
   return 0;
 }
