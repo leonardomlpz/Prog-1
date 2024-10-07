@@ -67,38 +67,7 @@ struct racional simplifica_r (struct racional r)
 
 /* implemente as demais funções de racional.h aqui */
 
-void imprime_r (struct racional r)
-{
-  r = simplifica_r (r);
 
-  if (r.den == 0){
-    printf ("INVALIDO ");
-    return;
-  }
-  if (r.num == 0){
-    printf ("0 ");
-    return;
-  }
-  if (r.num == r.den){
-    printf ("1 ");
-    return;
-  }
-  /* apenas inverte*/
-  if (r.den < 0)
-  { 
-    r.den = r.den * -1;
-    r.num = r.num * -1;
-    /*testa se o numerador e denominador sao negativos
-    e inverte se forem*/
-    /*tambem testa se apenas o den eh negativo*/
-  }
-  if (r.den == 1){
-    printf ("%ld ", r.num);
-    return;
-  }
-  printf ("%ld/%ld ", r.num, r.den);
-  return;
-}
 
 int valido_r (struct racional r)
 {
@@ -132,6 +101,39 @@ struct racional sorteia_r (long min, long max)
   return r;
 }
 
+void imprime_r (struct racional r)
+{
+  r = simplifica_r (r);
+
+  if (r.den == 0){
+    printf ("NaN");
+    return;
+  }
+  if (r.num == 0){
+    printf ("0");
+    return;
+  }
+  if (r.num == r.den){
+    printf ("1");
+    return;
+  }
+  /* apenas inverte*/
+  if (r.den < 0)
+  { 
+    r.den = r.den * -1;
+    r.num = r.num * -1;
+    /*testa se o numerador e denominador sao negativos
+    e inverte se forem*/
+    /*tambem testa se apenas o den eh negativo*/
+  }
+  if (r.den == 1){
+    printf ("%ld", r.num);
+    return;
+  }
+  printf ("%ld/%ld", r.num, r.den);
+  return;
+}
+
 struct racional cria_r (long numerador, long denominador)
 {
   struct racional r;
@@ -146,5 +148,48 @@ int soma_r (struct racional r1, struct racional r2, struct racional *r3)
   r3 -> den = r1.den*r2.den;
   if (valido_r(r1)==0 || (valido_r(r2)==0) || r3 == NULL)
     return 0;
-  return 1;
+  else return 1;
+}
+
+int subtrai_r (struct racional r1, struct racional r2, struct racional *r3)
+{
+  r3 -> num = r1.num*r2.den - r2.num*r1.den;
+  r3 -> den = r1.den*r2.den;
+  if (valido_r(r1)==0 || (valido_r(r2)==0) || r3 == NULL)
+    return 0;
+  else return 1;
+}
+
+int multiplica_r (struct racional r1, struct racional r2, struct racional *r3)
+{
+  r3 -> num = r1.num*r2.num;
+  r3 -> den = r1.den*r2.den;
+  if (valido_r(r1)==0 || (valido_r(r2)==0) || r3 == NULL)
+    return 0;
+  else return 1;
+}
+
+int divide_r (struct racional r1, struct racional r2, struct racional *r3)
+{
+  r3 -> num = r1.num*r2.den;
+  r3 -> den = r1.den*r2.num;
+  if (valido_r(r1)==0 || (valido_r(r2)==0) || r3 == NULL)
+    return 0;
+  else return 1;
+}
+
+void ordena_r (struct racional vetor[],long tam)
+{
+  for (int i = 0; i < tam -1; i++)
+  {
+    for (int j = 0; j < tam -i -1; j++)
+    {
+      if (compara_r(vetor[j],vetor[j + 1]) > 0)
+      {
+        struct racional temp = vetor[j];
+        vetor[j] = vetor[j + 1];
+        vetor[j + 1] = temp;
+      }
+    }
+  }
 }
