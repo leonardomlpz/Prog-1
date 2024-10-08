@@ -177,19 +177,3 @@ int divide_r (struct racional r1, struct racional r2, struct racional *r3)
     return 0;
   else return 1;
 }
-
-void ordena_r (struct racional vetor[],long tam)
-{
-  for (int i = 0; i < tam -1; i++)
-  {
-    for (int j = 0; j < tam -i -1; j++)
-    {
-      if (compara_r(vetor[j],vetor[j + 1]) > 0)
-      {
-        struct racional temp = vetor[j];
-        vetor[j] = vetor[j + 1];
-        vetor[j + 1] = temp;
-      }
-    }
-  }
-}

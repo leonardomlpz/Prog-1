@@ -11,11 +11,52 @@
 
 /* coloque aqui as funções auxiliares que precisar neste arquivo */
 
+void quick_sort(struct racional vetor[], int n) {
+    int menor = 0;
+    int maior = n - 1;
+
+    while (menor < maior)
+    {
+        // Escolhe o pivô
+        struct racional pivo = vetor[maior];
+        int i = menor - 1;
+
+        // Particiona o vetor
+        for (int j = menor; j < maior; j++)
+        {
+            if (compara_r(vetor[j], pivo) < 0)
+            {
+                i++;
+                struct racional temp = vetor[i];
+                vetor[i] = vetor[j];
+                vetor[j] = temp;
+            }
+        }
+        struct racional temp = vetor[i + 1];
+        vetor[i + 1] = vetor[maior];
+        vetor[maior] = temp;
+        int novoPivo = i + 1;
+
+        // Ajusta os limites
+        if (novoPivo - menor < maior - novoPivo)
+        {
+            // Ordena a parte menor primeiro
+            quick_sort(vetor + menor, novoPivo - menor);
+            menor = novoPivo + 1; // Ajusta menor para a próxima iteração
+        }
+        else
+        {
+            // Ordena a parte maior primeiro
+            quick_sort(vetor + novoPivo + 1, maior - novoPivo);
+            maior = novoPivo - 1; // Ajusta maior para a próxima iteração
+        }
+    }
+}
+
 /* programa principal */
 int main ()
 {
   long i,n,tam,numerador,denominador;
-  struct racional *r;
   struct racional vetor[99];
 
   scanf("%ld", &n);
@@ -65,18 +106,7 @@ int main ()
   printf ("\n");
 
   /*0ordenar vetor0*/
-  for (int i = 0; i < n -1; i++)
-  {
-    for (int j = 0; j < n -i -1; j++)
-    {
-      if (compara_r(vetor[j],vetor[j + 1]) > 0)
-      {
-        struct racional temp = vetor[j];
-        vetor[j] = vetor[j + 1];
-        vetor[j + 1] = temp;
-      }
-    }
-  }
+  quick_sort(vetor,n);
 
   printf ("VETOR =");
 
@@ -90,12 +120,17 @@ int main ()
 
   /*0somar vetor0*/
   struct racional soma={0,1};
-  for (i = 0; i < n - 1; i++)
+  for (i = 0; i < n; i++)
   {
-    soma_r(vetor[i],soma,&r);
+    struct racional temp;
+    soma_r(vetor[i],soma,&temp);
+    soma.num = temp.num;
+    soma.den = temp.den;
   }
-  printf ("SOMA = %ld/%ld", soma.num,soma.den);
-  
+  printf("SOMA =");
+  printf(" ");
+  imprime_r(soma);
+
   printf("\n");
   return 0;
 }
