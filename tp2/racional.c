@@ -82,9 +82,11 @@ int compara_r (struct racional r1, struct racional r2)
     return -2;
   if ((r1.num == r2.num)&&(r1.den == r2.den))
     return 0;
-  if ((r1.num/r1.den)<(r2.num/r2.den))
+  float primeiro = (r1.num/r1.den);
+  float segundo = (r2.num/r2.den);
+  if ((primeiro)<(segundo))
     return -1;
-  if ((r1.num/r1.den)>(r2.num/r2.den))
+  if ((primeiro)>(segundo))
     return 1;
 }
 
@@ -176,4 +178,38 @@ int divide_r (struct racional r1, struct racional r2, struct racional *r3)
   if (valido_r(r1)==0 || (valido_r(r2)==0) || r3 == NULL)
     return 0;
   else return 1;
+}
+
+void quick_sort(struct racional vetor[], int n) {
+    if (n <= 1) {
+        return; // Caso base: um array de tamanho 0 ou 1 já está ordenado
+    }
+
+    int menor = 0;
+    int maior = n - 1;
+
+    // Escolhe o pivô como o último elemento
+    struct racional pivo = vetor[maior];
+    int i = menor - 1;
+
+    // Passo de particionamento
+    for (int j = menor; j < maior; j++) {
+        if (compara_r(vetor[j], pivo) < 0) {
+            i++;
+            // Troca vetor[i] e vetor[j]
+            struct racional temp = vetor[i];
+            vetor[i] = vetor[j];
+            vetor[j] = temp;
+        }
+    }
+
+    // Coloca o pivô na posição correta
+    struct racional temp = vetor[i + 1];
+    vetor[i + 1] = vetor[maior];
+    vetor[maior] = temp;
+    int novoPivo = i + 1;
+
+    // Chamadas recursivas
+    quick_sort(vetor, novoPivo); // Ordena a parte esquerda
+    quick_sort(vetor + novoPivo + 1, n - novoPivo - 1); // Ordena a parte direita
 }
