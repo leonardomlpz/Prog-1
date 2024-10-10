@@ -11,6 +11,39 @@
 
 /* coloque aqui as funções auxiliares que precisar neste arquivo */
 
+void quick_sort(struct racional vetor[], int n) {
+    if (n <= 1) {
+        return; /* Se o vetor tiver tamanho 0 ou 1 já está ordenado */
+    }
+
+    int menor = 0;
+    int maior = n - 1;
+
+    /* Escolhe o pivô como o último elemento */
+    struct racional pivo = vetor[maior];
+    int i = menor - 1;
+
+    /* Particionamento */
+    for (int j = menor; j < maior; j++) {
+        if (compara_r(vetor[j], pivo) < 0) {
+            i++;
+            /* Troca vetor[i] e vetor[j] */
+            struct racional temp = vetor[i];
+            vetor[i] = vetor[j];
+            vetor[j] = temp;
+        }
+    }
+
+    /* Coloca o pivô na posição correta */
+    struct racional temp = vetor[i + 1];
+    vetor[i + 1] = vetor[maior];
+    vetor[maior] = temp;
+    int novoPivo = i + 1;
+
+    /* Recursividade*/ 
+    quick_sort(vetor, novoPivo); /* Ordena a parte esquerda */
+    quick_sort(vetor + novoPivo + 1, n - novoPivo - 1); /* Ordena a parte direita */
+}
 
 /* programa principal */
 int main ()
