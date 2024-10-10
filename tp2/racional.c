@@ -59,6 +59,8 @@ long mmc (long a, long b)
  * Se r for inválido, devolve-o sem simplificar. */
 struct racional simplifica_r (struct racional r)
 {
+  if (r.den == 0)
+    return r;
   long maior_multiplo = mdc(labs(r.num), labs(r.den));
   r.num = r.num / maior_multiplo;
   r.den = r.den / maior_multiplo;
@@ -82,14 +84,16 @@ int compara_r (struct racional r1, struct racional r2)
     return -2;
   if ((r1.num == r2.num)&&(r1.den == r2.den))
     return 0;
-  float primeiro = (r1.num/r1.den);
-  float segundo = (r2.num/r2.den);
-  if ((primeiro)<(segundo))
+  int min_mult_comum;
+  min_mult_comum = mmc(labs(r1.den),labs(r2.den));
+  r1.num = r1.num * (min_mult_comum/r1.den);
+  r2.num = r2.num * (min_mult_comum/r2.den);
+  if ((r1.num)<(r2.num))
     return -1;
-  if ((primeiro)>(segundo))
+  if ((r1.num)>(r2.num))
     return 1;
 }
-
+/*multiplica o num pelo mmc do den*/
 struct racional sorteia_r (long min, long max)
 {
   struct racional r;
