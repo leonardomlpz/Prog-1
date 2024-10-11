@@ -45,84 +45,106 @@ void quick_sort(struct racional vetor[], int n) {
     quick_sort(vetor + novoPivo + 1, n - novoPivo - 1); /* Ordena a parte direita */
 }
 
-/* programa principal */
-int main ()
-{
-  long i,n,tam,numerador,denominador;
-  struct racional vetor[100];
-
-  scanf("%ld", &n);
-  tam = n;
-  for(i = 0; i < n; i++)
+void le_vet(struct racional vetor[], long tam){
+  long i,numerador,denominador;
+  for(i = 0; i < tam; i++)
   {
     scanf("%ld %ld", &numerador, &denominador);
     vetor[i] = cria_r(numerador, denominador);
   }
+  return;
+}
 
-  printf ("VETOR =");
-
-  for (i = 0; i < n; i++)
-  {
-    printf (" ");
-    imprime_r(vetor[i]);
-  }
-
-  printf ("\n");
-
-  /*0eliminar os elemntos invalidos do vetor0*/
-  for (i = 0; i < n; i++)
+void elimina_nulo(struct racional vetor[], long tam, long *qtde_nulos)
+{
+  int i,j,tam_temp;
+  tam_temp = tam;
+  for (i = 0; i < tam; i++)
   {
     if (valido_r(vetor[i]) == 0)
     {
-      for (int j = n - 1; j > 1 ; j--)
+      *qtde_nulos = *qtde_nulos + 1;
+      for (j = tam_temp - 1; j > 1; j--)
       {
-        if(valido_r(vetor[j]) == 0)
-          tam--;
-        else {
-        vetor[i] = vetor[j];
-        n = j;
-        break;
+        if (valido_r(vetor[j]) != 0)
+        {
+          vetor[i] = vetor[j];
+          tam_temp = j;
+          break;
         }
       }
     }
   }
-  n++;
-  printf ("VETOR =");
+}
 
-  for (i = 0; i < n; i++)
+void soma_vet(struct racional vetor[], long tam)
+{
+  struct racional soma;
+  soma.num = 0;
+  soma.den = 1;
+  struct racional temp;
+  for (int i = 0; i < tam; i++)
   {
-    printf (" ");
-    imprime_r(vetor[i]);
-  }
-
-  printf ("\n");
-
-  /*0ordenar vetor0*/
-  quick_sort(vetor,n);
-
-  printf ("VETOR =");
-
-  for (i = 0; i < n; i++)
-  {
-    printf (" ");
-    imprime_r(vetor[i]);
-  }
-
-  printf ("\n");
-
-  /*0somar vetor0*/
-  struct racional soma={0,1};
-  for (i = 0; i < n; i++)
-  {
-    struct racional temp;
     soma_r(vetor[i],soma,&temp);
     soma.num = temp.num;
     soma.den = temp.den;
   }
-  printf("SOMA =");
-  printf(" ");
   imprime_r(soma);
+}  
+
+void imprime_vet(struct racional vetor[], long tam)
+{
+  for (int i = 0; i < tam; i++)
+{
+  printf (" ");
+  imprime_r(vetor[i]);
+}
+}
+
+/* programa principal */
+int main ()
+{
+  long n,nulos;
+  struct racional vetor[100];
+
+  scanf("%ld", &n);
+
+  le_vet(vetor,n);
+
+  printf ("VETOR =");
+  imprime_vet(vetor,n);
+  printf ("\n");
+
+  /*eliminar os elementos invalidos do vetor*/
+  nulos = 0;/* quantidade de numeros nulos no vetor*/
+  elimina_nulo(vetor,n,&nulos);
+
+  printf ("VETOR =");
+  if (nulos != n)
+  {
+    imprime_vet(vetor,n - nulos);
+  }
+  printf ("\n");
+
+  /*ordena vetor*/
+  printf("VETOR =");
+  if (nulos != n)
+  {
+    quick_sort(vetor,(n - nulos));
+    imprime_vet(vetor,n - nulos);
+  }
+  printf ("\n");
+
+  /*soma vetor*/
+  printf("SOMA =");
+  if (nulos != n)
+  {
+  printf(" ");
+  soma_vet(vetor,(n - nulos));
+  }
+  else printf(" 0");
 
   printf("\n");
+
   return 0;
 }
