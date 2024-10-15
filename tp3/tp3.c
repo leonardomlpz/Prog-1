@@ -12,7 +12,9 @@
 /* programa principal */
 int main ()
 {
-  /* a completar! */
+  int n;
+  scanf ("%d", n);
+  
 
   return (0) ;
 }

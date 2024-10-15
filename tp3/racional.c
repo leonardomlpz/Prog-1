@@ -126,9 +126,13 @@ void imprime_r (struct racional *r)
 struct racional *cria_r (long numerador, long denominador)
 {
   struct racional *r;
+  r = malloc (sizeof(struct racional));
+  if (r == NULL)
+    return NULL;
   r->num = numerador;
   r->den = denominador;
   /*continuar*/
+  return r;
 }
 
 int soma_r (struct racional *r1, struct racional *r2, struct racional *r3)
