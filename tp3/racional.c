@@ -10,6 +10,7 @@
 
 /* coloque aqui seus includes (primeiro os <...>, depois os "...") */
 #include <stdio.h>
+#include <stdlib.h>
 #include "racional.h"
 /*
  * Implemente aqui as funcoes definidas no racionais.h; caso precise,
@@ -40,7 +41,7 @@ long mmc (long a, long b)
   resultado_mdc = mdc(labs(a), labs(b));
   if (resultado_mdc < 0)
     return -1;
-  else
+
   return ((a * b) / mdc (a, b));
 }
 
@@ -65,11 +66,18 @@ int simplifica_r (struct racional *r)
   return 1;
 }
 
+int valido_r (struct racional *r)
+{
+  if ((r == NULL)||(r->den == 0))
+    return 0;
+  else return 1;
+}
+
 int compara_r (struct racional *r1, struct racional *r2)
 {
-  if ((valido_r(r1) == 0) || (valido_r(r2) == 0))
-    return -2;
   if ((r1 == NULL) || (r2 == NULL))
+    return -2;
+  if ((!valido_r(r1)) || (!valido_r(r2)))
     return -2;
 
   if ((r1->num == r2->num)&&(r1->den == r2->den))
