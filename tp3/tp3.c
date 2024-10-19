@@ -7,6 +7,7 @@
 /* coloque aqui seus includes (primeiro os <...>, depois os "...") */
 #include <stdio.h>
 #include <stdlib.h>
+#include "racional.h"
 
 /* coloque aqui as funções auxiliares que precisar neste arquivo */
 
@@ -63,25 +64,51 @@ void quick_sort(struct racional *vetor[], int n) {
     quick_sort(vetor + novoPivo + 1, n - novoPivo - 1); /* Ordena a parte direita */
 }
 
+/*ordena trocando o primero nulo do comeco para o fim, pelo primeiro nao nulo
+testando do fim para o comeco*/
+void elimina_nulo(struct racional *vetor[], long tam, long *qtde_nulos)
+{
+  int i,j,tam_temp;
+  tam_temp = tam;
+  for (i = 0; i < tam; i++)
+  {
+    if (valido_r(vetor[i]) == 0)
+    {
+      *qtde_nulos = *qtde_nulos + 1;
+      for (j = tam_temp - 1; j > 1; j--)
+      {
+        if (valido_r(vetor[j]) != 0)
+        {
+          vetor[i] = &vetor[j];
+          tam_temp = j;
+          break;
+        }
+      }
+    }
+  }
+}
+
 void soma_vet(struct racional *vetor[], long tam)
 {
-  struct racional *soma = malloc(sizeof(struct racional *));
+  struct racional *soma = malloc(sizeof(struct racional));
   soma->num = 0;
-  soma.den = 1;
+  soma->den = 1;
   struct racional temp;
   for (int i = 0; i < tam; i++)
   {
-    soma_r(vetor[i],&soma,&temp);
-    soma.num = temp.num;
-    soma.den = temp.den;
+    soma_r(vetor[i],soma,&temp);
+    soma->num = temp.num;
+    soma->den = temp.den;
   }
   imprime_r(soma);
+  free (soma);
 }
 
 /* programa principal */
 int main ()
 {
-  int n;
+  int n,nulos;
+
   scanf ("%d", n);
 
   struct racional **vetor = malloc(n*sizeof(struct racional *));
@@ -90,18 +117,27 @@ int main ()
   printf ("VETOR = ");
   imprime_vet(vetor,n);
 
-  /*eliminar nulos*/
-  printf ("VETOR = ");
-  imprime_vet(vetor,n);
+  nulos = 0;
 
+  elimina_nulo(vetor,n,nulos);
   printf ("VETOR = ");
+  imprime_vet(vetor,(n-nulos));
+
   quick_sort(vetor,n);
+  printf ("VETOR = ");
+  imprime_vet(vetor,(n-nulos));
 
-  struct racional *soma = malloc(sizeof(struct racional *));
-  soma->num = 0;
-  soma.den = 1;
+  printf ("SOMA =");
+  if (nulos != n)
+  {
+    pritnf (" ");
+    soma_vet(vetor,(n-nulos));
+  }
+  else
+    printf (" 0");
 
-
+  pritnf ("\n");
+  
   return (0) ;
 }
 

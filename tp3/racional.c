@@ -54,9 +54,11 @@ int simplifica_r (struct racional *r)
 {
   if ((r->den == 0) || (r == NULL))
     return 0;
+
   long maior_multiplo = mdc(labs(r->num), labs(r->den));
   r->num = r->num / maior_multiplo;
   r->den = r->den / maior_multiplo;
+  
   if (r->den < 0)
   { 
     r->den = r->den * -1;
@@ -114,19 +116,18 @@ void imprime_r (struct racional *r)
     printf ("1");
     return;
   }
-  /* apenas inverte*/
+  /*inverte se numerador e ou denominador forem negativos*/
   if (r->den < 0)
   { 
     r->den = r->den * -1;
     r->num = r->num * -1;
-    /*testa se o numerador e denominador sao negativos
-    e inverte se forem*/
-    /*tambem testa se apenas o den eh negativo*/
   }
+
   if (r->den == 1){
     printf ("%ld", r->num);
     return;
   }
+  
   printf ("%ld/%ld", r->num, r->den);
   return;
 }
@@ -137,9 +138,10 @@ struct racional *cria_r (long numerador, long denominador)
   r = malloc (sizeof(struct racional));
   if (r == NULL)
     return NULL;
+
   r->num = numerador;
   r->den = denominador;
-  /*continuar*/
+  
   return r;
 }
 
