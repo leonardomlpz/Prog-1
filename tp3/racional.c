@@ -77,6 +77,7 @@ int valido_r (struct racional *r)
 
 int compara_r (struct racional *r1, struct racional *r2)
 {
+  
   if ((r1 == NULL) || (r2 == NULL))
     return -2;
   if ((!valido_r(r1)) || (!valido_r(r2)))
@@ -88,13 +89,17 @@ int compara_r (struct racional *r1, struct racional *r2)
   int min_mult_comum;
   min_mult_comum = mmc(labs(r1->den),labs(r2->den));
 
-  r1->num = r1->num * (min_mult_comum/r1->den);
-  r2->num = r2->num * (min_mult_comum/r2->den);
+  struct racional temp_r1,temp_r2;
+  /* Calcula os numeradores equivalentes*/
+  temp_r1.num = r1->num * (min_mult_comum/r1->den);
+  temp_r2.num = r2->num * (min_mult_comum/r2->den);
 
-  if ((r1->num)<(r2->num))
+  if ((temp_r1.num)<(temp_r2.num))
     return -1;
-  if ((r1->num)>(r2->num))
+  if ((temp_r1.num)>(temp_r2.num))
     return 1;
+
+  return 0;
 }
 
 void imprime_r (struct racional *r)
@@ -183,6 +188,12 @@ int divide_r (struct racional *r1, struct racional *r2, struct racional *r3)
   if (valido_r(r1)==0 || (valido_r(r2)==0) || r3 == NULL)
     return 0;
   else return 1;
+}
+
+void destroi_r (struct racional *r)
+{
+  free (r);
+  r = NULL;
 }
 
 /* implemente as demais funções de racional.h aqui */
