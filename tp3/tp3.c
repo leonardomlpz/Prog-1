@@ -14,7 +14,6 @@
 void le_vet(struct racional *vetor[], long tam){
   long i,numerador,denominador;
 
-
   for(i = 0; i < tam; i++)
   {
     scanf("%ld %ld", &numerador, &denominador);
@@ -113,12 +112,13 @@ void soma_vet(struct racional *vetor[], long tam)
   soma = NULL;
 }
 
-void libera_r(struct racional *vetor[], int tam)
+void libera_vet(struct racional *vetor[], int tam)
 {
   int i;
   for (i = 0; i < tam; i++)
   {
     destroi_r(vetor[i]);
+    vetor[i] = NULL;
   }
 }
 
@@ -136,7 +136,7 @@ int main ()
     return 0;
   
   le_vet(vetor,n);
-  printf ("VETOR = ");
+  printf ("VETOR =");
   imprime_vet(vetor,n);
   printf ("\n");
 
@@ -144,13 +144,13 @@ int main ()
   nulos = 0;
 
   elimina_nulo(vetor,n,&nulos);
-  printf ("VETOR = ");
+  printf ("VETOR =");
   imprime_vet(vetor,(n-nulos));
   printf ("\n");
 
 
-  quick_sort(vetor,n-nulos);
-  printf ("VETOR = ");
+  quick_sort(vetor,(n-nulos));
+  printf ("VETOR =");
   imprime_vet(vetor,(n-nulos));
   printf ("\n");
 
@@ -164,15 +164,17 @@ int main ()
   else
     printf (" 0");
   printf ("\n"); 
-  
+
 
   printf ("VETOR =");
-
-  free (vetor);
-  vetor = NULL;
+  libera_vet (vetor, (n));  
+  imprime_vet(vetor,(n-nulos));
 
   printf ("\n");
   
+  free (vetor);
+  vetor = NULL;
+
   return (0) ;
 }
 

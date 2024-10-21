@@ -104,11 +104,11 @@ int compara_r (struct racional *r1, struct racional *r2)
 
 void imprime_r (struct racional *r)
 {
-  simplifica_r (r);
   if (r == NULL){
     printf ("NULL");
     return;
   }
+  simplifica_r (r);
   if (r->den == 0){
     printf ("NaN");
     return;
@@ -190,10 +190,11 @@ int divide_r (struct racional *r1, struct racional *r2, struct racional *r3)
   else return 1;
 }
 
-void destroi_r (struct racional *r)
-{
-  free (r);
-  r = NULL;
+void destroi_r(struct racional *r) {
+    if (r != NULL) {
+      free(r);
+      r = NULL;
+    }
 }
 
 /* implemente as demais funções de racional.h aqui */
