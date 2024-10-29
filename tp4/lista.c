@@ -22,7 +22,7 @@ struct lista_t *lista_cria (){
 
 int lista_insere (struct lista_t *lst, int item, int pos){
     struct item_t *nodo;
-    if (! (item = malloc(sizeof(struct item_t))) )
+    if (! (nodo = malloc(sizeof(struct item_t))) )
         return -1; 
 
     nodo->valor = item;
@@ -32,27 +32,27 @@ int lista_insere (struct lista_t *lst, int item, int pos){
     // se nao houver item na lista
     if (lst->prim == NULL)
     {
-        nodo->ant = lst->prim;
+        nodo->ant = NULL;
 
-        lst->prim = nodo->ant;
+        lst->prim = nodo;
         lst->ult = nodo;
 
         return lst->tamanho;
     }
 
     struct item_t *aux;
-    aux->prox = lst->prim;
-    aux->ant = lst;
-    // caminha ate achar o fim da lista
-    while (aux->prox != NULL)
-    {
-        aux->ant = aux->prox;
-        aux->prox = aux->prox->prox;
-    }
+    aux = lst->prim;
+
+    int contador = 0;
+    // anda ate achar a posicao ou acabar a lista
+    while ((contador < pos) && (aux->prox != NULL))
+        contador += 1;
 
     nodo->ant = aux->ant;
     nodo->prox = aux->prox;
-    lst->ult = nodo;
+
+    if (nodo->prox == NULL)
+        lst->ult = nodo;
 
     free (aux);
     aux = NULL;
@@ -60,9 +60,39 @@ int lista_insere (struct lista_t *lst, int item, int pos){
     return lst->tamanho;
 }
 
+struct lista_t *lista_destroi (struct lista_t *lst){
+    struct item_t *aux;
+    aux = lst->prim;
+
+    //elimina elementos da lista
+    while (aux->prox != NULL)
+    {
+        aux = aux->prox;
+
+        free (aux->ant);
+        aux->ant= NULL;
+
+        if (aux->prox == NULL)
+        {
+            free (aux);
+            aux = NULL;
+
+            return NULL;
+        }    
+    }
+
+    lst->prim = NULL;
+    lst->ult = NULL;
+    lst->tamanho = 0;
+
+    free (lst);
+
+    return NULL;
+}
+
 int lista_retira (struct lista_t *lst, int *item, int pos){
     struct item_t *aux;
-    int i = 0;
+    int cont = 1;
 
     if (pos == -1)
     {
@@ -78,18 +108,60 @@ int lista_retira (struct lista_t *lst, int *item, int pos){
         return lst->tamanho;
     }
 
-    aux->prox = lst->prim;
-    aux->ant = lst;
-    while (i < pos)
+    aux = lst->prim;
+    //caminha ate chegar na posicao para retirar    
+    while (cont <= pos)
     {
-        if (aux->prox->prox == NULL)
+        if (aux->prox == NULL)
             return -1;
 
-        aux->ant = aux->prox;
-        aux->prox = aux->prox->prox;
-        i++;
+        aux = aux->prox;
+        cont++;
     }
-    aux->ant->prox = aux->prox->prox;
-    aux->prox->prox->ant = aux->ant;
+    // liga o antetior com o prox pulando o removido
+    aux->ant = aux->prox;
+    aux->prox->ant = aux->ant;
 
+    *item = aux->valor;
+
+    free (aux);
+    aux = NULL;
+
+    lst->tamanho -= 1;
+
+    return lst->tamanho;
+}
+
+int lista_consulta (struct lista_t *lst, int *item, int pos){
+    struct item_t *aux;
+
+    if (pos == -1)
+    {
+        aux = lst->ult;
+        *item = aux->valor;
+
+        free (aux);
+        aux = NULL;
+
+        return lst->tamanho;
+    }
+
+    int cont = 1;
+    aux = lst->prim;
+
+    while (cont <= pos)
+    {
+        if (aux->prox == NULL)
+            return -1;
+
+        aux = aux->prox;
+        cont++;
+    }    
+
+    *item = aux->valor;
+
+    free (aux);
+    aux = NULL;
+
+    return lst->tamanho;
 }
