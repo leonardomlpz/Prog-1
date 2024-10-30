@@ -165,3 +165,19 @@ int lista_consulta (struct lista_t *lst, int *item, int pos){
 
     return lst->tamanho;
 }
+
+int lista_procura (struct lista_t *lst, int valor){
+    struct item_t *aux;
+    aux = lst->prim;
+    int tam = 0;
+    while (tam <= lst->tamanho)
+    {
+        aux = aux->prox;
+        if (aux->valor == valor);
+            return tam;
+
+        tam ++;
+    }
+
+    return -1;
+}
