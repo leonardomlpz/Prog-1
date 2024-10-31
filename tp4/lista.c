@@ -6,6 +6,7 @@
 // Implementação com lista encadeada dupla não-circular
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "lista.h"
 
 struct lista_t *lista_cria (){
@@ -169,15 +170,36 @@ int lista_consulta (struct lista_t *lst, int *item, int pos){
 int lista_procura (struct lista_t *lst, int valor){
     struct item_t *aux;
     aux = lst->prim;
-    int tam = 0;
+    int tam = 1;
     while (tam <= lst->tamanho)
     {
-        aux = aux->prox;
-        if (aux->valor == valor);
+        if (aux->valor == valor)
             return tam;
 
+        aux = aux->prox;
         tam ++;
     }
 
     return -1;
+}
+
+int lista_tamanho (struct lista_t *lst){
+    if (lst->tamanho == NULL)
+        return -1;
+
+    return lst->tamanho;
+}
+
+void lista_imprime (struct lista_t *lst){
+    struct item_t *aux;
+    if (lst->prim == NULL)
+        return;
+
+    aux = lst->prim;
+    printf ("%d", aux->valor);
+    aux = aux->prox;
+    for (int i = 2; i <= lst->tamanho; i++)
+        printf (" %d", aux->valor);
+
+    return;
 }
