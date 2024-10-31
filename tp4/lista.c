@@ -22,9 +22,24 @@ struct lista_t *lista_cria (){
 }
 
 int lista_insere (struct lista_t *lst, int item, int pos){
+    struct item_t *aux;
+    aux = lst->prim;
+
     struct item_t *nodo;
     if (! (nodo = malloc(sizeof(struct item_t))) )
         return -1; 
+
+    //insere no fim da lista
+    if (pos > lst->tamanho || pos == -1)
+    {
+        aux = lst->ult;
+        aux->prox = nodo;
+        nodo->ant = aux;
+        lst->ult = nodo;
+        lst->tamanho++;
+
+        return lst->tamanho;
+    }
 
     nodo->valor = item;
     nodo->prox = NULL;
@@ -43,26 +58,12 @@ int lista_insere (struct lista_t *lst, int item, int pos){
         return lst->tamanho;
     }
 
-    struct item_t *aux;
-    aux = lst->prim;
-
     //insere na primeira posicao
     if (pos == 0)
     {
         lst->prim = nodo;
         nodo->prox = aux;
         aux->ant = nodo;
-
-        return lst->tamanho;
-    }
-
-    //insere no fim da lista
-    if (pos > lst->tamanho || pos == -1)
-    {
-        aux = lst->ult;
-        aux->prox = nodo;
-        nodo->ant = aux;
-        lst->ult = nodo;
 
         return lst->tamanho;
     }
@@ -169,12 +170,11 @@ int lista_retira (struct lista_t *lst, int *item, int pos){
 int lista_consulta (struct lista_t *lst, int *item, int pos){
     struct item_t *aux;
 
-    if (pos == -1)
+    if ((pos == -1) || pos > (lst->tamanho))
     {
         aux = lst->ult;
         *item = aux->valor;
 
-        free (aux);
         aux = NULL;
 
         return lst->tamanho;
@@ -194,7 +194,6 @@ int lista_consulta (struct lista_t *lst, int *item, int pos){
 
     *item = aux->valor;
 
-    free (aux);
     aux = NULL;
 
     return lst->tamanho;
