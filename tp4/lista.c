@@ -28,6 +28,7 @@ int lista_insere (struct lista_t *lst, int item, int pos){
 
     nodo->valor = item;
     nodo->prox = NULL;
+    nodo->ant = NULL;
     lst->tamanho += 1;
 
     // se nao houver item na lista
@@ -37,6 +38,7 @@ int lista_insere (struct lista_t *lst, int item, int pos){
 
         lst->prim = nodo;
         lst->ult = nodo;
+        nodo->ant = NULL;
 
         return lst->tamanho;
     }
@@ -44,16 +46,47 @@ int lista_insere (struct lista_t *lst, int item, int pos){
     struct item_t *aux;
     aux = lst->prim;
 
+    //insere na primeira posicao
+    if (pos == 0)
+    {
+        lst->prim = nodo;
+        nodo->prox = aux;
+        aux->ant = nodo;
+
+        return lst->tamanho;
+    }
+
+    //insere no fim da lista
+    if (pos > lst->tamanho || pos == -1)
+    {
+        aux = lst->ult;
+        aux->prox = nodo;
+        nodo->ant = aux;
+        lst->ult = nodo;
+
+        return lst->tamanho;
+    }
+
+    //insere no meio
     int contador = 0;
     // anda ate achar a posicao ou acabar a lista
-    while ((contador < pos) && (aux->prox != NULL))
+    while (contador < pos)
+    {
         contador += 1;
+        aux = aux->prox;
+    }
 
     nodo->ant = aux->ant;
-    nodo->prox = aux->prox;
-
+    nodo->prox = aux;
+    //testa se foi inserido na primeira posicao
+    if (nodo->ant == NULL) 
+        lst->prim = nodo;
+    //testa se foi inserido na ultima posicao
     if (nodo->prox == NULL)
         lst->ult = nodo;
+
+    //movimenta o aux
+    aux->ant = nodo;
 
     free (aux);
     aux = NULL;
@@ -184,7 +217,7 @@ int lista_procura (struct lista_t *lst, int valor){
 }
 
 int lista_tamanho (struct lista_t *lst){
-    if (lst->tamanho == NULL)
+    if (lst->tamanho < 0)
         return -1;
 
     return lst->tamanho;
@@ -197,9 +230,11 @@ void lista_imprime (struct lista_t *lst){
 
     aux = lst->prim;
     printf ("%d", aux->valor);
-    aux = aux->prox;
+    
     for (int i = 2; i <= lst->tamanho; i++)
+    {
+        aux = aux->prox;
         printf (" %d", aux->valor);
-
+    }
     return;
 }
