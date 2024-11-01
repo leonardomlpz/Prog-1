@@ -23,76 +23,67 @@ struct lista_t *lista_cria (){
 
 int lista_insere (struct lista_t *lst, int item, int pos){
     struct item_t *aux;
-    aux = lst->prim;
 
     struct item_t *nodo;
     if (! (nodo = malloc(sizeof(struct item_t))) )
-        return -1; 
+        return -1;
+    //inicializando o novo nodo
+    nodo->ant = NULL;
+    nodo->prox = NULL;
+    nodo->valor = item;
 
-    //insere no fim da lista
-    if (pos > lst->tamanho || pos == -1)
+    if (lst->tamanho == 0)
+    {
+        lst->prim = nodo;
+        lst->ult = nodo;
+
+        return lst->tamanho = lst->tamanho + 1;
+    }    
+
+    aux = lst->prim;
+
+    //insere no inicio
+    if (pos == 0)
+    {
+        nodo->prox = aux;
+        aux->ant = nodo;
+        lst->prim = nodo;
+
+        aux = NULL;
+
+        return lst->tamanho = lst->tamanho + 1;
+    }
+
+    //insere no fim
+    if (pos > lst->tamanho || pos < 0)
     {
         aux = lst->ult;
         aux->prox = nodo;
         nodo->ant = aux;
         lst->ult = nodo;
-        lst->tamanho++;
 
-        return lst->tamanho;
-    }
+        aux = NULL;
 
-    nodo->valor = item;
-    nodo->prox = NULL;
-    nodo->ant = NULL;
-    lst->tamanho += 1;
-
-    // se nao houver item na lista
-    if (lst->prim == NULL)
-    {
-        nodo->ant = NULL;
-
-        lst->prim = nodo;
-        lst->ult = nodo;
-        nodo->ant = NULL;
-
-        return lst->tamanho;
-    }
-
-    //insere na primeira posicao
-    if (pos == 0)
-    {
-        lst->prim = nodo;
-        nodo->prox = aux;
-        aux->ant = nodo;
-
-        return lst->tamanho;
+        return lst->tamanho = lst->tamanho + 1;
     }
 
     //insere no meio
+    // contador == indice ou posicao do nodo na lista
     int contador = 0;
-    // anda ate achar a posicao ou acabar a lista
     while (contador < pos)
     {
-        contador += 1;
         aux = aux->prox;
-    }
-
-    nodo->ant = aux->ant;
+        contador++;
+    }// acaba quando chegar na posicao
+    
+    aux->ant = nodo;
     nodo->prox = aux;
-    //testa se foi inserido na primeira posicao
-    if (nodo->ant == NULL) 
-        lst->prim = nodo;
-    //testa se foi inserido na ultima posicao
-    if (nodo->prox == NULL)
-        lst->ult = nodo;
-
-    //movimenta o aux
+    nodo->ant = aux->ant;
     aux->ant = nodo;
 
-    free (aux);
     aux = NULL;
 
-    return lst->tamanho;
+    return lst->tamanho = lst->tamanho + 1;
 }
 
 struct lista_t *lista_destroi (struct lista_t *lst){
