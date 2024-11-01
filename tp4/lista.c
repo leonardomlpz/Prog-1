@@ -31,13 +31,14 @@ int lista_insere (struct lista_t *lst, int item, int pos){
     nodo->ant = NULL;
     nodo->prox = NULL;
     nodo->valor = item;
-
+    //lista vazia
     if (lst->tamanho == 0)
     {
         lst->prim = nodo;
         lst->ult = nodo;
+        lst->tamanho++;
 
-        return lst->tamanho = lst->tamanho + 1;
+        return lst->tamanho;
     }    
 
     aux = lst->prim;
@@ -51,11 +52,13 @@ int lista_insere (struct lista_t *lst, int item, int pos){
 
         aux = NULL;
 
-        return lst->tamanho = lst->tamanho + 1;
+        lst->tamanho++;
+
+        return lst->tamanho;
     }
 
     //insere no fim
-    if (pos > lst->tamanho || pos < 0)
+    if (pos > lst->tamanho || pos == -1)
     {
         aux = lst->ult;
         aux->prox = nodo;
@@ -64,7 +67,9 @@ int lista_insere (struct lista_t *lst, int item, int pos){
 
         aux = NULL;
 
-        return lst->tamanho = lst->tamanho + 1;
+        lst->tamanho++;
+
+        return lst->tamanho;
     }
 
     //insere no meio
@@ -76,14 +81,20 @@ int lista_insere (struct lista_t *lst, int item, int pos){
         contador++;
     }// acaba quando chegar na posicao
     
-    aux->ant = nodo;
-    nodo->prox = aux;
+    // aux->ant = nodo;
+    // nodo->prox = aux;
+    // nodo->ant = aux->ant;
+    // aux->ant = nodo;
     nodo->ant = aux->ant;
+    nodo->prox = aux;
+    aux->ant->prox = nodo;
     aux->ant = nodo;
 
     aux = NULL;
 
-    return lst->tamanho = lst->tamanho + 1;
+    lst->tamanho++;
+
+    return lst->tamanho;
 }
 
 struct lista_t *lista_destroi (struct lista_t *lst){
