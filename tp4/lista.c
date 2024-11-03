@@ -22,6 +22,9 @@ struct lista_t *lista_cria (){
 }
 
 int lista_insere (struct lista_t *lst, int item, int pos){
+    if (lst == NULL)
+        return -1;
+
     struct item_t *aux;
 
     struct item_t *nodo;
@@ -75,11 +78,12 @@ int lista_insere (struct lista_t *lst, int item, int pos){
     //insere no meio
     // contador == indice ou posicao do nodo na lista
     int contador = 0;
+    //sai do laco quando chegar na posicao
     while (contador < pos)
     {
         aux = aux->prox;
         contador++;
-    }// acaba quando chegar na posicao
+    }
     
     nodo->ant = aux->ant;
     nodo->prox = aux;
@@ -118,12 +122,15 @@ struct lista_t *lista_destroi (struct lista_t *lst){
 }
 
 int lista_retira (struct lista_t *lst, int *item, int pos){
+    if (lst == NULL || item == NULL)
+        return -1;
+    
     struct item_t *aux;
     int cont = 0;
 
     if (lst->tamanho == 0)
         return -1;
-
+    //lista com um unico elemento
     if (lst->tamanho == 1)
     {
         aux = lst->prim;
@@ -192,11 +199,13 @@ int lista_retira (struct lista_t *lst, int *item, int pos){
 }
 
 int lista_consulta (struct lista_t *lst, int *item, int pos){
-    struct item_t *aux;
-
-    if (pos > lst->tamanho || pos < -1)
+    if (lst == NULL || item == NULL)
         return -1;
-
+    struct item_t *aux;
+    //posicao maior que quantidade de itens
+    if (pos > (lst->tamanho - 1) || pos < -1)
+        return -1;
+    //remove do fim
     if ((pos == -1) || pos == (lst->tamanho))
     {
         aux = lst->ult;
@@ -207,14 +216,11 @@ int lista_consulta (struct lista_t *lst, int *item, int pos){
         return lst->tamanho;
     }
 
-    int cont = 1;
+    int cont = 0;
     aux = lst->prim;
-
-    while (cont <= pos)
+    //caminha ate a posicao
+    while (cont < pos)
     {
-        if (aux->prox == NULL)
-            return -1;
-
         aux = aux->prox;
         cont++;
     }    
@@ -227,6 +233,9 @@ int lista_consulta (struct lista_t *lst, int *item, int pos){
 }
 
 int lista_procura (struct lista_t *lst, int valor){
+    if (lst == NULL)
+        return -1;
+
     struct item_t *aux;
     aux = lst->prim;
     int tam = 0;
@@ -243,7 +252,7 @@ int lista_procura (struct lista_t *lst, int valor){
 }
 
 int lista_tamanho (struct lista_t *lst){
-    if (lst->tamanho < 0)
+    if (lst == NULL || lst->tamanho < 0)
         return -1;
 
     return lst->tamanho;
