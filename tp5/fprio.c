@@ -51,7 +51,8 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
     }
     //caminha se a prioridade for menor
     //para se chegar no ultimo item
-    while (prio > aux->prox->prio || aux->prox != NULL)
+    aux = f->prim;
+    while (prio > aux->prio || aux->prox != NULL)
         aux = aux->prox;
     //insere o item
     novo->prox = aux->prox;
@@ -84,44 +85,30 @@ struct fprio_t *fprio_destroi (struct fprio_t *f){
 }
 
 void *fprio_retira (struct fprio_t *f, int *tipo, int *prio){
-    if (f == NULL || tipo == NULL || prio == NULL)
+    if (f == NULL || f->num == 0)
     {
         tipo = NULL;
         prio = NULL;
 
-        return;
-    }
-    if (f->num == 0)
-    {
-        tipo = NULL;
-        prio = NULL;
-        
-        return;
-    }
+        return NULL;
+    }    
 
     struct fpnodo_t *aux;
     aux = f->prim;
-    if (f->num == 1)
-    {
-        *tipo = aux->tipo;
-        *prio = aux->prio;
-        free (aux);
-        aux = NULL;
-        f->prim = NULL;
-        f->num--;
 
-        return;
-    }
     //mais de um item na lista
     f->prim = aux->prox;
     f->num--;
     *tipo = aux->tipo;
     *prio = aux->prio;
 
+    void *item;
+    item = aux->item;
+
     free (aux);
     aux = NULL;
 
-    return;
+    return item;
 }
 
 int fprio_tamanho (struct fprio_t *f){
