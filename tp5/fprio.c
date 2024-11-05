@@ -10,7 +10,7 @@
 
 struct fprio_t *fprio_cria (){
     struct fprio_t *primeiro;
-    if (! (primeiro = malloc(sizeof(struct fprio_t))) );
+    if (! (primeiro = malloc(sizeof(struct fprio_t))) )
         return NULL;
 
     primeiro->prim = NULL;
@@ -23,7 +23,7 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
     if (f == NULL || item == NULL)
         return -1;
     struct fpnodo_t *novo;
-    if (! (novo = mallco(sizeof(struct fpnodo_t))) );
+    if (! (novo = malloc(sizeof(struct fpnodo_t))) )
         return -1;
 
     novo->item = item;
@@ -41,14 +41,13 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
     
     struct fpnodo_t *aux;
     aux = f->prim;
-    //primeiro item da fila tem menos prioridade
-    if (aux->prio > prio)
+    //checa se o intem foi inserido posteriormente
+    while (aux->prox != NULL)
     {
-        novo->prox = aux;
-        f->prim = novo;
-        f->num++;
-
-        return f->num;
+        if (aux->item == item)
+            return -1;
+        
+        aux = aux->prox;
     }
     //caminha se a prioridade for menor
     //para se chegar no ultimo item
@@ -74,7 +73,6 @@ struct fprio_t *fprio_destroi (struct fprio_t *f){
         //move para o proximo
         aux = aux->prox;
         //libera o atual
-        free (temp->item);
         free (temp);
         temp = NULL;
     }
@@ -87,10 +85,19 @@ struct fprio_t *fprio_destroi (struct fprio_t *f){
 
 void *fprio_retira (struct fprio_t *f, int *tipo, int *prio){
     if (f == NULL || tipo == NULL || prio == NULL)
-        return NULL;
+    {
+        tipo = NULL;
+        prio = NULL;
 
+        return;
+    }
     if (f->num == 0)
-        return NULL;
+    {
+        tipo = NULL;
+        prio = NULL;
+        
+        return;
+    }
 
     struct fpnodo_t *aux;
     aux = f->prim;
@@ -98,12 +105,44 @@ void *fprio_retira (struct fprio_t *f, int *tipo, int *prio){
     {
         *tipo = aux->tipo;
         *prio = aux->prio;
-        free (aux->item);
         free (aux);
         aux = NULL;
+        f->prim = NULL;
         f->num--;
 
         return;
     }
+    //mais de um item na lista
     f->prim = aux->prox;
+    f->num--;
+    *tipo = aux->tipo;
+    *prio = aux->prio;
+
+    free (aux);
+    aux = NULL;
+
+    return;
+}
+
+int fprio_tamanho (struct fprio_t *f){
+    if (f == NULL)
+        return -1;
+
+    return f->num;
+}
+
+void fprio_imprime (struct fprio_t *f){
+    if (f == NULL || f->prim == NULL)
+        return;
+
+    struct fpnodo_t *aux;
+    aux = f->prim;
+    printf ("(%d %d)", aux->tipo, aux->prio);
+
+    for (int i = 2; i <= f->num; i++)
+    {
+        aux = aux->prox;
+        printf (" (%d %d)", aux->tipo, aux->prio);
+    }
+
 }
