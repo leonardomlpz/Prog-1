@@ -49,10 +49,35 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
         
         aux = aux->prox;
     }
+
+    if (f->num == 1)
+    {
+        f->num++;
+        if (prio < aux->prio)
+        {
+            novo->prox = aux;
+            f->prim = novo;
+            
+            return f->num;
+        }
+        aux->prox = novo;
+
+        return f->num;
+    }
+
+    if (prio < f->prim->prio)
+    {
+        novo->prox = f->prim;
+        f->prim = novo;
+        f->num++;
+
+        return f->num;
+    }
+
     //caminha se a prioridade for menor
     //para se chegar no ultimo item
     aux = f->prim;
-    while (prio > aux->prio || aux->prox != NULL)
+    while (aux->prox != NULL && prio > aux->prio)
         aux = aux->prox;
     //insere o item
     novo->prox = aux->prox;
