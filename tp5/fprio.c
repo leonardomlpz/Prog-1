@@ -50,21 +50,6 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
         aux = aux->prox;
     }
 
-    if (f->num == 1)
-    {
-        f->num++;
-        if (prio < aux->prio)
-        {
-            novo->prox = aux;
-            f->prim = novo;
-            
-            return f->num;
-        }
-        aux->prox = novo;
-
-        return f->num;
-    }
-    
     if (prio < f->prim->prio)
     {
         novo->prox = f->prim;
@@ -156,5 +141,4 @@ void fprio_imprime (struct fprio_t *f){
         aux = aux->prox;
         printf (" (%d %d)", aux->tipo, aux->prio);
     }
-
 }
