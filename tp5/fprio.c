@@ -42,11 +42,13 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
     struct fpnodo_t *aux;
     aux = f->prim;
     //checa se o item foi inserido anteriormente
-    while (aux->prox != NULL)
+    while (aux != NULL)
     {
         if (aux->item == item)
+        {
+            free (novo);
             return -1;
-        
+        }
         aux = aux->prox;
     }
 
@@ -74,6 +76,7 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
 
 struct fprio_t *fprio_destroi (struct fprio_t *f){
     struct fpnodo_t *aux;
+    aux = f->prim;
 
     if (f == NULL || f->num < 0)
         return NULL;
@@ -95,14 +98,14 @@ struct fprio_t *fprio_destroi (struct fprio_t *f){
 }
 
 void *fprio_retira (struct fprio_t *f, int *tipo, int *prio){
-    if (f == NULL || f->num == 0)
+    if (f == NULL || f->num == 0 || tipo == NULL || prio == NULL)
     {
         tipo = NULL;
         prio = NULL;
 
         return NULL;
-    }    
-
+    }
+  
     struct fpnodo_t *aux;
     aux = f->prim;
 
