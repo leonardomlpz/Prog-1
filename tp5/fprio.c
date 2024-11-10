@@ -20,6 +20,12 @@ struct fprio_t *fprio_cria (){
 }
 
 int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
+    if (f == NULL && item != NULL)
+    {
+        free (item);
+
+        return -1;
+    }
     if (f == NULL || item == NULL)
         return -1;
     struct fpnodo_t *novo;
