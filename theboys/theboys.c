@@ -2,7 +2,8 @@
 // Autor: xxxxx, GRR xxxxxx
 
 // seus #includes vão aqui
-
+#include <stdio.h>
+#include <stdlib.h>
 // seus #defines vão aqui
 
 // minimize o uso de variáveis globais
