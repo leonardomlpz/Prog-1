@@ -4,6 +4,9 @@
 // seus #includes vão aqui
 #include <stdio.h>
 #include <stdlib.h>
+#include "fprio.h"
+#include "lista.h"
+#include "conjunto.h"
 // seus #defines vão aqui
 
 // minimize o uso de variáveis globais
@@ -12,7 +15,7 @@
 int main ()
 {
   // iniciar o mundo
-
+  
   // executar o laço de simulação
 
   // destruir o mundo
