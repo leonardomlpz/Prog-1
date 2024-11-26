@@ -1,22 +1,22 @@
 #ifndef ESTRUTURAS
 #define ESTRUTURAS
 #include "conjunto.h"
-
+//Espera: fila onde os heróis esperam para poder entrar na base
 struct base
 {
     int id;
     int lotacao;
-    //presentes
-    //espera -> fila para entrar
-    //local [x][y]
+    struct cjto_t presentes;
+    struct fprio_t espera;
+    int coord_x,coord_y;
 };
-
+//Habilidades: conjunto de habilidades necessárias para cumprir a missão
 struct missao
 {
     int id;
     struct cjto_t habilidades;
     int perigo;
-    //local [x][y]
+    int coord_x,coord_y;
 };
 
 struct heroi
@@ -26,7 +26,7 @@ struct heroi
     int paciencia;
     int velocidade;
     int experiencia;
-    int *base;
+    int base;
 };
 
 struct mundo
