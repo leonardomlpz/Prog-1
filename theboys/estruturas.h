@@ -6,8 +6,8 @@ struct base
 {
     int id;
     int lotacao;
-    struct cjto_t presentes;
-    struct fprio_t espera;
+    struct cjto_t *presentes;
+    struct fprio_t *espera;
     int coord_x,coord_y;
 };
 //Habilidades: conjunto de habilidades necessárias para cumprir a missão
