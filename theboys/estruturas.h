@@ -7,14 +7,14 @@ struct base
     int id;
     int lotacao;
     struct cjto_t *presentes;
-    struct fprio_t *espera;
+    struct lista_t *espera;
     int coord_x,coord_y;
 };
 //Habilidades: conjunto de habilidades necessárias para cumprir a missão
 struct missao
 {
     int id;
-    struct cjto_t habilidades;
+    struct cjto_t *habilidades;
     int perigo;
     int coord_x,coord_y;
 };
@@ -32,13 +32,13 @@ struct heroi
 struct mundo
 {
     int NHerois;
-    int *herois;
+    struct heroi *herois;
     int NBases;
-    int *bases;
+    struct base *bases;
     int NMissoes;
-    int *missoes;
+    struct missao *missoes;
     int NHablidades;
-    int TamMundo[5][5];//mudar tamanho depois
+    int TamMundo_x, TamMundo_y;
     int Relogio;
 };
 
