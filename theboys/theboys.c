@@ -56,11 +56,12 @@ int main ()
 
 
     int tipo,tempo;
+    void *evento;
 
     // executar o laço de simulação
     do
     {
-        void *evento = fprio_retira(lef,&tipo,&tempo);
+        evento = fprio_retira(lef,&tipo,&tempo);
         if (evento == NULL)
             break;
 

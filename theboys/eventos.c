@@ -114,10 +114,16 @@ void *morre(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *le
 }
 
 //missao
-void *missao(int tempo,struct missao *missao)
+void *missao(int tempo,struct mundo *mundo, struct missao *missao)
 {
+    struct missao *temp_missao = missao;
+    
     float distancia;
-    distancia = sqrt((pow(missao->coord_x - 1) + (pow(missao->coord_y - 1))));
+    for (int i = 0; i < mundo->NBases; i++)
+    {
+    distancia = sqrt((pow(mundo->missoes->coord_x - temp_missao->coord_x) + (pow(mundo->missoes->coord_y - temp_missao->coord_y))));
+    
+    }
 }
 //fim
 void *fim(int tempo)
