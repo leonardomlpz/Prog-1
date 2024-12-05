@@ -14,7 +14,7 @@ void cria_herois(struct mundo *mundo)
         temp.experiencia = 0;
         temp.paciencia = aleat(0,100);
         temp.velocidade = aleat(50,5000);
-        temp.Habilidades = cjto_aleat(mundo->NHablidades,3);//alterar o 1
+        temp.Habilidades = cjto_aleat(mundo->NHablidades,4);//alterar o 1
 
         mundo->herois[i] = temp;
     }
