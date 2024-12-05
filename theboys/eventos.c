@@ -4,19 +4,7 @@
 #include "lista.h"
 #include "conjunto.h"
 #include "estruturas.h"
-//lef = fprio 
-
-/*tipos do switch case 
-1: chega
-2: espera
-3: desiste
-4: avisa
-5: entra
-6: sai
-7: viaja
-8: morre
-9: missao
-10: fim */
+#include "cria.h"
 
 int aleat (long min, long max)
 {
@@ -35,9 +23,10 @@ void *chega(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *le
         esperar = (heroi->paciencia) > (10 * base->espera->tamanho);
     
     if (esperar)/*mudar se a lef altera o mundo ou a base*/
-        fprio_insere(lef,espera(tempo,heroi,base,lef),1,1);
+        fprio_insere(lef,espera(tempo,heroi,base,lef),ev_espera,tempo);
     else
-        fprio_insere(lef,desiste(tempo,heroi,base,lef),1,1);
+        fprio_insere(lef,desiste(tempo,heroi,base,lef),
+        ev_desiste,tempo);
 }
 
 void *espera(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef)
@@ -45,7 +34,7 @@ void *espera(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *l
     //adiciona H ao fim da fila de espera B
     lista_insere(base->espera,heroi,-1);
     //cria e insere na LEF o evento AVISA(agora,b)
-    fprio_insere(lef,avisa(tempo,base,lef),1,1);
+    fprio_insere(lef,avisa(tempo,base,lef),ev_avisa,tempo);
 }
 
 void *desiste(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef)
@@ -54,7 +43,7 @@ void *desiste(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *
     destino = aleat(1,1);//mudar para base aleatoria
     //cria e insere na LEF o evento VIAJA (agora, H, D)
     //destino aleatorio
-    fprio_insere(lef,viaja(tempo,heroi,destino,lef),1,1);
+    fprio_insere(lef,viaja(tempo,heroi,destino,lef),ev_viaja,tempo);
 }
 
 void *avisa(int tempo, struct base *base,struct fprio_t *lef)
@@ -73,7 +62,7 @@ void *avisa(int tempo, struct base *base,struct fprio_t *lef)
             return;
         base->presentes++;
         base->espera->tamanho--;
-        fprio_insere(lef,entra(tempo,temp,base,lef),1,1);
+        fprio_insere(lef,entra(tempo,temp,base,lef),ev_entra,tempo);
     }
 }
 
@@ -84,7 +73,7 @@ void *entra(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *le
     //TPB = 15 + paciência de H * aleatório [1...20]
     tpb = 15 + heroi->paciencia * aleat(1,20);
     //cria e insere na LEF o evento SAI (agora + TPB, H, B)
-    fprio_insere(lef,sai((tempo + tpb),heroi,base,lef),1,1);
+    fprio_insere(lef,sai((tempo + tpb),heroi,base,lef),ev_sai,tempo);
 }
 
 void *sai(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef)
@@ -95,9 +84,9 @@ void *sai(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef)
     //escolhe uma base destino D aleatória
     nova_base = aleat(0,10);//mudar dois
     //cria e insere na LEF o evento VIAJA (agora, H, D)
-    fprio_insere(lef,viaja(tempo,heroi,nova_base,lef),1,1);
+    fprio_insere(lef,viaja(tempo,heroi,nova_base,lef),ev_viaja,tempo);
     //cria e insere na LEF o evento AVISA (agora, B)
-    fprio_insere(lef,avisa(tempo,base,lef),1,1);
+    fprio_insere(lef,avisa(tempo,base,lef),ev_avisa,tempo);
 }
 
 void *viaja(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef)
@@ -111,7 +100,7 @@ void *viaja(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *le
     //duração = distância / velocidade de H
     duracao = distancia / heroi->velocidade;
     //cria e insere na LEF o evento CHEGA (agora + duração, H, D)
-    fprio_insere(lef,chega((tempo + duracao),heroi,base,lef),1,1);
+    fprio_insere(lef,chega((tempo + duracao),heroi,base,lef),ev_chega,tempo);
 }
 
 void *morre(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef)
@@ -121,17 +110,17 @@ void *morre(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *le
     //muda o status de H para morto 
     
     //cria e insere na LEF o evento AVISA (agora, B)
-    fprio_insere(lef,avisa(tempo,base,lef),1,1);
+    fprio_insere(lef,avisa(tempo,base,lef),ev_avisa,tempo);
 }
 
 //missao
-void missao(int tempo,struct missao missao)
+void *missao(int tempo,struct missao *missao)
 {
     float distancia;
-    distancia = sqrt((power(missao.coord_x - 1) + (power(missao.coord_y - 1))));
+    distancia = sqrt((pow(missao->coord_x - 1) + (pow(missao->coord_y - 1))));
 }
 //fim
-void fim(int tempo)
+void *fim(int tempo)
 {
     /*encerra a simulação
     apresenta estatísticas dos heróis

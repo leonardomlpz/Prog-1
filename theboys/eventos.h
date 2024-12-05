@@ -19,8 +19,8 @@ void *viaja(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *le
 
 void *morre(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef);
 
-void missao(int tempo,struct missao missao);
+void *missao(int tempo,struct missao *missao);
 
-void fim(int tempo);
+void *fim(int tempo);
 
 #endif

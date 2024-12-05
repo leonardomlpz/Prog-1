@@ -32,7 +32,7 @@ int main ()
     mundo->NHerois = mundo->NHablidades * 5;
     mundo->NMissoes = t_fim_mundo / 100;
     //tempo da simulacao
-    int relogio = 0;
+    mundo->Relogio = 0;
 
     cria_base(mundo);
     cria_herois(mundo);
@@ -45,51 +45,60 @@ int main ()
         fprio_insere(lef,chega(tempo_aleatorio, &mundo->herois[i], base_temporaria, lef),1,tempo_aleatorio);
     }
 
-    for (int i = 0; i < mundo->NHerois;i++)
+    for (int i = 0; i < mundo->NMissoes;i++)
     {
         int tempo_aleatorio = aleat(0,T_FIM);
-        
+        fprio_insere(lef,missao(tempo_aleatorio,&mundo->missoes[i]),1,tempo_aleatorio);
     }
 
-    void *evento = fprio_retira(lef,1,1);
+    fprio_insere(lef,fim(T_FIM),ev_fim,T_FIM);
+
+
+
+    int tipo,tempo;
+
     // executar o laço de simulação
     do
     {
-        switch (((struct fpnodo_t *)evento)->tipo)
+        void *evento = fprio_retira(lef,&tipo,&tempo);
+        if (evento == NULL)
+            break;
+
+        switch (tipo)
         {
-            case 1:  // Chegada
-            chega(relogio, ((struct fpnodo_t *)evento), ((struct fpnodo_t *)evento)->base, lef);
+            case ev_chega:
+            chega(tempo, ((struct heroi *)evento), ((struct base *)evento), lef);
         break;
                 
-        case 2:  // Espera
-            espera(relogio, ((struct fpnodo_t *)evento)->heroi, ((struct fpnodo_t *)evento)->base, lef);
+        case ev_espera:
+            espera(tempo, ((struct heroi *)evento), ((struct base *)evento), lef);
             break;
 
-        case 3:  // Desiste
-            desiste(relogio, ((struct fpnodo_t *)evento)->heroi, ((struct fpnodo_t *)evento)->base, lef);
+        case ev_desiste:
+            desiste(tempo, ((struct heroi *)evento), ((struct base *)evento), lef);
             break;
 
-        case 4:  // Viaja
-            viaja(relogio, ((struct fpnodo_t *)evento)->heroi, ((struct fpnodo_t *)evento)->base, lef);
+        case ev_viaja:
+            viaja(tempo, ((struct heroi *)evento), ((struct base *)evento), lef);
             break;
 
-        case 5:  // Entra
-            entra(relogio, ((struct fpnodo_t *)evento)->heroi, ((struct fpnodo_t *)evento)->base, lef);
+        case ev_entra:
+            entra(tempo, ((struct heroi *)evento), ((struct base *)evento), lef);
             break;
 
-        case 6:  // Sai
-            sai(relogio, ((struct fpnodo_t *)evento)->heroi, ((struct fpnodo_t *)evento)->base, lef);
+        case ev_sai:
+            sai(tempo, ((struct heroi *)evento), ((struct base *)evento), lef);
             break;
 
-        case 7:  // Avisa
-            avisa(relogio, ((struct fpnodo_t *)evento)->base, lef);
+        case ev_avisa:
+            avisa(tempo, ((struct base *)evento), lef);
             break;
 
         
         default:
             break;
         }
-    } while (relogio < mundo->Relogio);
+    } while (tempo < T_FIM);
     
 
     // destruir o mundo
