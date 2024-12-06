@@ -11,21 +11,22 @@
 #include "eventos.h"
 #include "cria.h"
 // seus #defines vão aqui
-#define T_FIM 10000
+
+
 // minimize o uso de variáveis globais
 // programa principal
 int main ()
 {
-    int t_inicio = 0;
-    int tam_mundo = 20000;
     // iniciar o mundo
     int t_fim_mundo = T_FIM;//mudar para 525600
 
     struct fprio_t *lef;
+    if (! (lef = malloc(sizeof(struct fprio_t))) )
+        return 0;
 
     struct mundo *mundo;
     if (! (mundo = malloc(sizeof(struct mundo))) )
-        return NULL;
+        return 0;
 
     //tempo final do programa
     mundo->NHablidades = 10;
@@ -37,29 +38,29 @@ int main ()
     cria_base(mundo);
     cria_herois(mundo);
     cria_missao(mundo);
-
+    // inicializa herois
     for (int i = 0; i < mundo->NHerois;i++)
     {
         int base_temporaria = aleat(0,mundo->NBases -1);
         int tempo_aleatorio = aleat(0,4320);
-        fprio_insere(lef,chega(tempo_aleatorio, &mundo->herois[i], base_temporaria, lef),1,tempo_aleatorio);
+        fprio_insere(lef,chega(tempo_aleatorio, &mundo->herois[i], &mundo->bases[base_temporaria], lef),ev_chega,tempo_aleatorio);
     }
-
+    // inicializa missoes
     for (int i = 0; i < mundo->NMissoes;i++)
     {
         int tempo_aleatorio = aleat(0,T_FIM);
-        fprio_insere(lef,missao(tempo_aleatorio,&mundo->missoes[i]),1,tempo_aleatorio);
+        fprio_insere(lef,missao(tempo_aleatorio,&mundo->missoes[i]),ev_missao,tempo_aleatorio);
     }
 
     fprio_insere(lef,fim(T_FIM),ev_fim,T_FIM);
 
 
 
-    int tipo,tempo;
+    int tipo,tempo = 0;
     void *evento;
 
     // executar o laço de simulação
-    do
+    while (tempo < T_FIM)
     {
         evento = fprio_retira(lef,&tipo,&tempo);
         if (evento == NULL)
@@ -99,7 +100,7 @@ int main ()
         default:
             break;
         }
-    } while (tempo < T_FIM);
+    }
     
 
     // destruir o mundo

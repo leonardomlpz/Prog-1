@@ -3,6 +3,8 @@
 
 int aleat (long min, long max);
 
+int agenda_evento(struct fprio_t *fila, void *item, int tipo, int prio);
+
 void *chega(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef);
 
 void *espera(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef);

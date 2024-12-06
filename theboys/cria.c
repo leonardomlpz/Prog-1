@@ -18,6 +18,7 @@ void cria_herois(struct mundo *mundo)
 
         mundo->herois[i] = temp;
     }
+    return;
 }
 
 void cria_missao(struct mundo *mundo)
@@ -33,6 +34,7 @@ void cria_missao(struct mundo *mundo)
 
         mundo->missoes[i] = missao;
     }
+    return;
 }
 
 void cria_base(struct mundo *mundo)
@@ -49,4 +51,5 @@ void cria_base(struct mundo *mundo)
 
         mundo->bases[i] = base;
     }
+    return;
 }

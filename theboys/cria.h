@@ -1,6 +1,10 @@
 #ifndef CRIA
 #define CRIA
 
+#include "estruturas.h"
+
+#define T_FIM 10000
+
 #define ev_chega 1
 #define ev_espera 2
 #define ev_desiste 3
