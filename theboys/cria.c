@@ -4,6 +4,7 @@
 #include "lista.h"
 #include "conjunto.h"
 #include "estruturas.h"
+#include "eventos.h"
 
 void cria_herois(struct mundo *mundo)
 {
@@ -15,6 +16,7 @@ void cria_herois(struct mundo *mundo)
         temp.paciencia = aleat(0,100);
         temp.velocidade = aleat(50,5000);
         temp.Habilidades = cjto_aleat(mundo->NHablidades,4);//alterar o 1
+        temp.vivo = 1;
 
         mundo->herois[i] = temp;
     }

@@ -2,6 +2,7 @@
 #define CRIA
 
 #include "estruturas.h"
+#include "eventos.h"
 
 #define T_FIM 10000
 

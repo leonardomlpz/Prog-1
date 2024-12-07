@@ -34,25 +34,21 @@ int main ()
     mundo->NMissoes = t_fim_mundo / 100;
     //tempo da simulacao
     mundo->Relogio = 0;
+    mundo->NBases = 50;
 
     cria_base(mundo);
     cria_herois(mundo);
-    cria_missao(mundo);
+    //cria_missao(mundo);
     // inicializa herois
     for (int i = 0; i < mundo->NHerois;i++)
     {
         int base_temporaria = aleat(0,mundo->NBases -1);
         int tempo_aleatorio = aleat(0,4320);
-        fprio_insere(lef,chega(tempo_aleatorio, &mundo->herois[i], &mundo->bases[base_temporaria], lef),ev_chega,tempo_aleatorio);
+        agenda_evento(lef,chega(tempo_aleatorio, &mundo->herois[i], &mundo->bases[base_temporaria], mundo, lef),ev_chega,tempo_aleatorio);
     }
     // inicializa missoes
-    for (int i = 0; i < mundo->NMissoes;i++)
-    {
-        int tempo_aleatorio = aleat(0,T_FIM);
-        fprio_insere(lef,missao(tempo_aleatorio,&mundo->missoes[i]),ev_missao,tempo_aleatorio);
-    }
 
-    fprio_insere(lef,fim(T_FIM),ev_fim,T_FIM);
+    agenda_evento(lef,fim(T_FIM),ev_fim,T_FIM);
 
 
 
@@ -69,31 +65,31 @@ int main ()
         switch (tipo)
         {
             case ev_chega:
-            chega(tempo, ((struct heroi *)evento), ((struct base *)evento), lef);
+            chega(tempo, ((struct heroi *)evento), ((struct base *)evento), mundo, lef);
         break;
                 
         case ev_espera:
-            espera(tempo, ((struct heroi *)evento), ((struct base *)evento), lef);
+            espera(tempo, ((struct heroi *)evento), ((struct base *)evento), mundo, lef);
             break;
 
         case ev_desiste:
-            desiste(tempo, ((struct heroi *)evento), ((struct base *)evento), lef);
+            desiste(tempo, ((struct heroi *)evento), ((struct base *)evento),mundo,  lef);
             break;
 
         case ev_viaja:
-            viaja(tempo, ((struct heroi *)evento), ((struct base *)evento), lef);
+            viaja(tempo, ((struct heroi *)evento), ((struct base *)evento), mundo, lef);
             break;
 
         case ev_entra:
-            entra(tempo, ((struct heroi *)evento), ((struct base *)evento), lef);
+            entra(tempo, ((struct heroi *)evento), ((struct base *)evento), mundo, lef);
             break;
 
         case ev_sai:
-            sai(tempo, ((struct heroi *)evento), ((struct base *)evento), lef);
+            sai(tempo, ((struct heroi *)evento), ((struct base *)evento), mundo, lef);
             break;
 
         case ev_avisa:
-            avisa(tempo, ((struct base *)evento), lef);
+            avisa(tempo, ((struct base *)evento), mundo, lef);
             break;
 
         

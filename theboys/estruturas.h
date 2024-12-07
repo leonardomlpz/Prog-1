@@ -5,14 +5,14 @@
 
 
 //Espera: fila onde os heróis esperam para poder entrar na base
-struct base
+typedef struct base
 {
     int id;
     int lotacao;
     struct cjto_t *presentes;
     struct lista_t *espera;
     int coord_x,coord_y;
-};
+} base_t;
 //Habilidades: conjunto de habilidades necessárias para cumprir a missão
 struct missao
 {
@@ -25,7 +25,7 @@ struct missao
 struct heroi
 {
     int id;
-    int Habilidades;
+    struct cjto_t *Habilidades;
     int paciencia;
     int velocidade;
     int experiencia;
