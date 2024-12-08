@@ -32,12 +32,34 @@ void inicia_herois(struct mundo *mundo, struct fprio_t *lef)
     {
         temp = mundo->herois[i];
         temp.base = aleat(0,mundo->NBases -1);
-        printf("base aleat%6d", temp.base);
+
         mundo->herois[i] = temp;
         tempo = aleat(0,4320);
-        printf("  tempo:%6d\n",tempo);
-        agenda_evento(lef,chega(tempo,&mundo->herois[i],&mundo->bases[i],mundo,lef),ev_chega,tempo);
+
+        struct evento *temp;
+        temp = itens(&mundo->bases[i],&mundo->herois[i]);
+        fprio_insere(lef,temp,ev_chega,tempo);
     }
+}
+
+void cria_base(struct mundo *mundo)
+{
+    struct base base;
+    for (int i = 0; i < mundo->NBases; i++)
+    {
+        base.id = i;
+        base.coord_x = aleat(0,TAM_MUNDO);
+        base.coord_y = aleat(0,TAM_MUNDO);
+        base.lotacao = aleat(3,10);
+        base.presentes = cjto_cria(base.lotacao);
+        printf("ID:%2d  LOTACAO:%2d  COORD:%6d", base.id, base.lotacao,base.coord_x);
+        base.presentes->num = 0;
+        printf("presentes num:%4d\n", base.presentes->num);
+        base.espera = lista_cria();
+
+        mundo->bases[i] = base;
+    }
+    return;
 }
 
 void cria_missao(struct mundo *mundo)
@@ -52,25 +74,6 @@ void cria_missao(struct mundo *mundo)
         missao.perigo = aleat(0,100);
 
         mundo->missoes[i] = missao;
-    }
-    return;
-}
-
-void cria_base(struct mundo *mundo)
-{
-    struct base base;
-    for (int i = 0; i < mundo->NBases; i++)
-    {
-        base.id = i;
-        base.coord_x = aleat(0,TAM_MUNDO);
-        base.coord_y = aleat(0,TAM_MUNDO);
-        base.lotacao = aleat(3,10);
-        base.presentes = cjto_cria(base.lotacao);
-        cjto_imprime(base.presentes);
-        base.presentes->num = 0;
-        base.espera = lista_cria();
-
-        mundo->bases[i] = base;
     }
     return;
 }

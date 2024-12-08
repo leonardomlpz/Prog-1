@@ -14,27 +14,27 @@ int aleat (int min, int max)
   return rand() % (max - min + 1) + min;
 }
 
-int agenda_evento(struct fprio_t *fila, void *item, int tipo, int prio) {
-    return fprio_insere(fila, item, tipo, prio);
-}
-
 struct evento *itens(struct base *base, struct heroi *heroi)
 {
     struct evento *elementos;
+    if (! (elementos = malloc(sizeof(struct evento))) )
+        return NULL;
+
     elementos->base = base;
     elementos->heroi = heroi;
 
     return elementos;
 }
 
-void *entra(int tempo, struct heroi *heroi, struct base *base,struct mundo *mundo,struct fprio_t *lef)
+void *entra(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef)
 {
     int tpb;
     //calcula TPB = tempo de permanência na base:
     //TPB = 15 + paciência de H * aleatório [1...20]
     tpb = 15 + heroi->paciencia * aleat(1,20);
     //cria e insere na LEF o evento SAI (agora + TPB, H, B)
-    agenda_evento(lef,sai((tempo + tpb),heroi,base,mundo,lef),ev_sai,tempo+tpb);
+
+    base->presentes->num++;
 
     struct evento *temp;
     temp = itens(base,heroi);
@@ -45,23 +45,28 @@ void *entra(int tempo, struct heroi *heroi, struct base *base,struct mundo *mund
     return NULL;
 }
 
-void *espera(int tempo, struct heroi *heroi, struct base *base,struct mundo *mundo,struct fprio_t *lef)
+void *espera(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef)
 {
     printf("%6d: ESPERA HEROI %2d BASE %d (%2d)\n", tempo, heroi->id, base->id, base->espera->tamanho);
     //adiciona H ao fim da fila de espera B
     lista_insere(base->espera,heroi->id,-1);
     //cria e insere na LEF o evento AVISA(agora,b)
-    agenda_evento(lef,avisa(tempo,base,heroi,mundo,lef),ev_avisa,tempo);
-    fprio_insere(lef,base,ev_avisa,tempo);
+
+    struct evento *temp;
+    temp = itens(base,heroi);
+    fprio_insere(lef,temp,ev_avisa,tempo);
     return NULL;
 }
 
-void *avisa(int tempo, struct base *base,struct heroi *heroi,struct mundo *mundo,struct fprio_t *lef)
+void *avisa(int tempo, struct heroi *heroi,struct base *base,struct fprio_t *lef)
 {
+    struct evento *temp;
+    temp = itens(base,heroi);
     //enquanto houver vaga em B e houver heróis esperando na fila:
     //retira primeiro herói (H') da fila de B
     //adiciona H' ao conjunto de heróis presentes em B
     //cria e insere na LEF o evento ENTRA (agora, H', B)
+
     while (base->lotacao > base->presentes->num && base->espera->tamanho > 0)
     {
         int numero,item;
@@ -69,32 +74,38 @@ void *avisa(int tempo, struct base *base,struct heroi *heroi,struct mundo *mundo
         numero = cjto_insere(base->presentes,item);
         if (!numero)
             return NULL;
-        base->presentes++;
+        base->presentes->num++;
         base->espera->tamanho--;
-        agenda_evento(lef,entra(tempo,heroi,base,mundo,lef),ev_entra,tempo);
+
+        fprio_insere(lef,temp,ev_entra,tempo);
     }
     return NULL;
 }
 
-void *chega(int tempo, struct heroi *heroi, struct base *base,struct mundo *mundo,struct fprio_t *lef)
+void *chega(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef)
 {
+    struct evento *temp;
+    temp = itens(base,heroi);
+    
     int esperar;
     //mudar onde o heroi se encontra no momento
     heroi->base = base->id;
 
-    if (base->lotacao > base->presentes->num || base->espera->tamanho == 0)
+    if (base->espera->tamanho == 0 || base->lotacao > base->presentes->num)
         esperar = 1;
     else
         esperar = (heroi->paciencia) > (10 * base->espera->tamanho);
     
-    if (esperar)/*mudar se a lef altera o mundo ou a base*/
+    if (esperar == 1)/*mudar se a lef altera o mundo ou a base*/
     {
-        agenda_evento(lef,espera(tempo,heroi,base,mundo,lef),ev_espera,tempo);
+        fprio_insere(lef,temp,ev_espera,tempo);
+
         printf("%6d: CHEGA HEROI %2d BASE %d (%2d/%2d) ESPERA\n", tempo, heroi->id, base->id, base->presentes->num, base->presentes->cap);
     }
     else
     {
-        agenda_evento(lef,desiste(tempo,heroi,base,mundo,lef), ev_desiste,tempo);
+        fprio_insere(lef,temp,ev_desiste,tempo);
+
         printf("%6d: CHEGA HEROI %2d BASE %d (%2d/%2d) DESISTE\n", tempo, heroi->id, base->id, base->presentes->num, base->presentes->cap);
     }
     return NULL;
@@ -107,7 +118,9 @@ void *desiste(int tempo, struct heroi *heroi, struct base *base,struct mundo *mu
     struct base *destino;
     destino = &mundo->bases[aleat(0,mundo->NBases -1)];
 
-    agenda_evento(lef,viaja(tempo,heroi,destino,mundo,lef),ev_viaja,tempo);
+    struct evento *temp;
+    temp = itens(destino,heroi);
+    fprio_insere(lef,temp,ev_viaja,tempo);
 
     return NULL;
 }
@@ -119,9 +132,13 @@ void *sai(int tempo, struct heroi *heroi, struct base *base,struct mundo *mundo,
 
     cjto_retira(base->presentes,heroi->id);
 
-    agenda_evento(lef,viaja(tempo,heroi,nova_base,mundo,lef),ev_viaja,tempo);
+    struct evento *temp;
+    temp = itens(nova_base,heroi);
+    fprio_insere(lef,temp,ev_viaja,tempo);
 
-    agenda_evento(lef,avisa(tempo,base,heroi,mundo,lef),ev_avisa,tempo);
+
+    temp = itens(base,heroi);
+    fprio_insere(lef,temp,ev_avisa,tempo);
 
     //ver tamanho da base
     printf ("%6d: SAI HEROI %2d BASE %d (%2d/%2d)\n", tempo, heroi->id, base->id, base->presentes->num, base->lotacao);
@@ -144,20 +161,24 @@ void *viaja(int tempo, struct heroi *heroi, struct base *base,struct mundo *mund
 
     printf ("%6d: VIAJA HEROI %2d BASE %2d BASE %d DIST %.2f VEL %d CHEGA %f\n", tempo, heroi->id, heroi->base, base->id, distancia, heroi->velocidade, tempo+duracao);
     //cria e insere na LEF o evento CHEGA (agora + duração, H, D)
-    agenda_evento(lef,chega((tempo + duracao),heroi,base,mundo,lef),ev_chega,tempo);
+    struct evento *temporario;
+    temporario = itens(base,heroi);
+    fprio_insere(lef,temporario,ev_chega,tempo + duracao);
 
 
     return NULL;
 }
 
-void *morre(int tempo, struct heroi *heroi, struct base *base,struct missao *missao,struct mundo *mundo, struct fprio_t *lef)
+void *morre(int tempo, struct heroi *heroi, struct base *base,struct missao *missao, struct fprio_t *lef)
 {
     //retira H do conjunto de heróis presentes em B
     cjto_retira(base->presentes,heroi->id);//mudar numero
     //muda o status de H para morto 
     heroi->vivo = 0;
     //cria e insere na LEF o evento AVISA (agora, B)
-    agenda_evento(lef,avisa(tempo,base,heroi,mundo,lef),ev_avisa,tempo);
+    struct evento *temp;
+    temp = itens(base,heroi);
+    fprio_insere(lef,temp,ev_morre,tempo);
 
     printf ("%6d: MORRE HEROI %2d MISSAO %d\n", tempo, heroi->id, missao->id);
 
@@ -168,6 +189,19 @@ void *morre(int tempo, struct heroi *heroi, struct base *base,struct missao *mis
 // {
 //   return (*(int*)a-*(int*)b);
 // }
+// int misssao(int tempo,struct mundo *mundo, struct missao *missao)
+// {
+//    cria uma copia das bases para ordenar com base nas distancias da missao
+//   struct base base_ordenada[10];
+//      for (int i = 0; i < mundo->NBases; i++)
+//          base_ordenada[i] = mundo->bases[i];
+// 
+// 
+// 
+// 
+// }
+
+
 
 //missao
 // void *missao(int tempo,struct mundo *mundo, struct missao *missao)
