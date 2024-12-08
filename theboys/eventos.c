@@ -28,11 +28,14 @@ struct evento *itens(struct base *base, struct heroi *heroi)
 
 void *entra(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef)
 {
+    
+
     int tpb;
     //calcula TPB = tempo de permanência na base:
     //TPB = 15 + paciência de H * aleatório [1...20]
     tpb = 15 + heroi->paciencia * aleat(1,20);
     //cria e insere na LEF o evento SAI (agora + TPB, H, B)
+    printf ("%6d: ENTRA HEROI %2d BASE %d (%2d/%2d) SAI %d\n", tempo, heroi->id, base->id, base->presentes->num, base->lotacao, tempo+tpb);
 
     base->presentes->num++;
 
@@ -40,13 +43,14 @@ void *entra(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *le
     temp = itens(base,heroi);
     fprio_insere(lef,temp,ev_sai,tempo + tpb);
 
-    printf ("%6d: ENTRA HEROI %2d BASE %d (%2d/%2d) SAI %d\n", tempo, heroi->id, base->id, base->presentes->num, base->lotacao, tempo+tpb);
 
     return NULL;
 }
 
 void *espera(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef)
 {
+    
+
     printf("%6d: ESPERA HEROI %2d BASE %d (%2d)\n", tempo, heroi->id, base->id, base->espera->tamanho);
     //adiciona H ao fim da fila de espera B
     lista_insere(base->espera,heroi->id,-1);
@@ -60,8 +64,10 @@ void *espera(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *l
 
 void *avisa(int tempo, struct heroi *heroi,struct base *base,struct fprio_t *lef)
 {
+    
+
     struct evento *temp;
-    temp = itens(base,heroi);
+    
     //enquanto houver vaga em B e houver heróis esperando na fila:
     //retira primeiro herói (H') da fila de B
     //adiciona H' ao conjunto de heróis presentes em B
@@ -70,13 +76,14 @@ void *avisa(int tempo, struct heroi *heroi,struct base *base,struct fprio_t *lef
     while (base->lotacao > base->presentes->num && base->espera->tamanho > 0)
     {
         int numero,item;
-        lista_retira(base->espera,&item,1);
+        lista_retira(base->espera,&item,0);
         numero = cjto_insere(base->presentes,item);
-        if (!numero)
+        if (numero == -1)
             return NULL;
         base->presentes->num++;
         base->espera->tamanho--;
 
+        temp = itens(base,heroi);
         fprio_insere(lef,temp,ev_entra,tempo);
     }
     return NULL;
@@ -84,6 +91,8 @@ void *avisa(int tempo, struct heroi *heroi,struct base *base,struct fprio_t *lef
 
 void *chega(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef)
 {
+    
+
     struct evento *temp;
     temp = itens(base,heroi);
     
@@ -113,6 +122,8 @@ void *chega(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *le
 
 void *desiste(int tempo, struct heroi *heroi, struct base *base,struct mundo *mundo, struct fprio_t *lef)
 {
+    
+
     printf("%6d: DESISTE HEROI %2d BASE %d\n", tempo, heroi->id, base->id);
 
     struct base *destino;
@@ -127,10 +138,13 @@ void *desiste(int tempo, struct heroi *heroi, struct base *base,struct mundo *mu
 
 void *sai(int tempo, struct heroi *heroi, struct base *base,struct mundo *mundo,struct fprio_t *lef)
 {
+    
+
     struct base *nova_base;
     nova_base = &mundo->bases[aleat(0,mundo->NBases -1)];
 
     cjto_retira(base->presentes,heroi->id);
+    base->lotacao--;
 
     struct evento *temp;
     temp = itens(nova_base,heroi);
@@ -146,31 +160,40 @@ void *sai(int tempo, struct heroi *heroi, struct base *base,struct mundo *mundo,
     return NULL;
 }
 
-void *viaja(int tempo, struct heroi *heroi, struct base *base,struct mundo *mundo,struct fprio_t *lef)
-{
-    float distancia = 0;
-    float duracao = 0;
-    struct base temp = mundo->bases[heroi->base];
-    //calcula duração da viagem:
-    //distância = distância cartesiana entre a base atual de H e a base D 
-    //d = raiz((x2-x1)quadrado + (y2-y1)quadrado)
-    distancia = sqrt((pow(temp.coord_x - base->coord_x,2)) + (pow(temp.coord_y - base->coord_y,2)));
+void *viaja(int tempo, struct heroi *heroi, struct base *base, struct mundo *mundo, struct fprio_t *lef) {
+    // A base de origem do herói
+    struct base origem = mundo->bases[heroi->base];  // Aqui, você estava tentando acessar a base de maneira errada
 
-    //duração = distância / velocidade de H
-    duracao = distancia / heroi->velocidade;
+    // Calcular a distância entre a base de origem e a base de destino
+    float distancia = sqrt(pow(origem.coord_x - base->coord_x, 2) + pow(origem.coord_y - base->coord_y, 2));
+    
+    // Calcular a duração da viagem
+    float duracao = distancia / heroi->velocidade;  // Certifique-se de que a velocidade do herói é maior que 0
+    
+    // Verifique se a duração é válida
+    if (duracao < 0) {
+        printf("Erro: Duração de viagem inválida (negativa).\n");
+        return NULL;
+    }
 
-    printf ("%6d: VIAJA HEROI %2d BASE %2d BASE %d DIST %.2f VEL %d CHEGA %f\n", tempo, heroi->id, heroi->base, base->id, distancia, heroi->velocidade, tempo+duracao);
-    //cria e insere na LEF o evento CHEGA (agora + duração, H, D)
-    struct evento *temporario;
-    temporario = itens(base,heroi);
-    fprio_insere(lef,temporario,ev_chega,tempo + duracao);
+    // Mostrar informações sobre a viagem
+    printf("%6d: VIAJA HEROI %2d BASE %2d BASE %2d DIST %.2f VEL %d CHEGA %f\n", 
+           tempo, heroi->id, heroi->base, base->id, distancia, heroi->velocidade, tempo + duracao);
 
+    // Criar evento de chegada para a base de destino
+    struct evento *temporario = itens(base, heroi);
+
+    // Inserir o evento CHEGA na fila de eventos
+    fprio_insere(lef, temporario, ev_chega, tempo + duracao);
 
     return NULL;
 }
 
+
 void *morre(int tempo, struct heroi *heroi, struct base *base,struct missao *missao, struct fprio_t *lef)
 {
+    
+
     //retira H do conjunto de heróis presentes em B
     cjto_retira(base->presentes,heroi->id);//mudar numero
     //muda o status de H para morto 

@@ -36,9 +36,11 @@ void inicia_herois(struct mundo *mundo, struct fprio_t *lef)
         mundo->herois[i] = temp;
         tempo = aleat(0,4320);
 
-        struct evento *temp;
-        temp = itens(&mundo->bases[i],&mundo->herois[i]);
-        fprio_insere(lef,temp,ev_chega,tempo);
+        printf("id:%2d base id:%2d\n", mundo->herois[i].id,temp.base);
+
+        struct evento *temporario;
+        temporario = itens(&mundo->bases[temp.base],&mundo->herois[i]);
+        fprio_insere(lef,temporario,ev_chega,tempo);
     }
 }
 
@@ -52,9 +54,7 @@ void cria_base(struct mundo *mundo)
         base.coord_y = aleat(0,TAM_MUNDO);
         base.lotacao = aleat(3,10);
         base.presentes = cjto_cria(base.lotacao);
-        printf("ID:%2d  LOTACAO:%2d  COORD:%6d", base.id, base.lotacao,base.coord_x);
         base.presentes->num = 0;
-        printf("presentes num:%4d\n", base.presentes->num);
         base.espera = lista_cria();
 
         mundo->bases[i] = base;

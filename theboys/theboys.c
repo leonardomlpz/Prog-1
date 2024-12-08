@@ -4,6 +4,7 @@
 // seus #includes vão aqui
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "fprio.h"
 #include "lista.h"
 #include "conjunto.h"
@@ -11,7 +12,6 @@
 #include "eventos.h"
 #include "cria.h"
 // seus #defines vão aqui
-
 
 // minimize o uso de variáveis globais
 // programa principal

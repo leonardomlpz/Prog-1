@@ -5,7 +5,7 @@
 #include "eventos.h"
 #include "fprio.h"
 
-#define T_FIM 10000
+#define T_FIM 525600
 #define TAM_MUNDO 20000
 
 #define ev_chega 1
