@@ -2,7 +2,11 @@
 #define ESTRUTURAS
 #include "conjunto.h"
 
-
+struct evento
+{
+    struct base *base;
+    struct heroi *heroi;
+};
 
 //Espera: fila onde os heróis esperam para poder entrar na base
 typedef struct base

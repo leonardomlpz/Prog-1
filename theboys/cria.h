@@ -3,8 +3,10 @@
 
 #include "estruturas.h"
 #include "eventos.h"
+#include "fprio.h"
 
 #define T_FIM 10000
+#define TAM_MUNDO 20000
 
 #define ev_chega 1
 #define ev_espera 2
@@ -18,6 +20,8 @@
 #define ev_fim 10
 
 void cria_herois(struct mundo *mundo);
+
+void inicia_herois(struct mundo *mundo, struct fprio_t *lef);
 
 void cria_missao(struct mundo *mundo);
 

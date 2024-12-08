@@ -35,9 +35,14 @@ int main ()
     //tempo da simulacao
     mundo->Relogio = 0;
     mundo->NBases = 50;
+    mundo->TamMundo_x = 10000;
+    mundo->TamMundo_y = 10000;
 
+    //cria_base(mundo);
     cria_base(mundo);
     cria_herois(mundo);
+    inicia_herois(mundo,lef);
+    
     //cria_missao(mundo);
     // inicializa herois
     for (int i = 0; i < mundo->NHerois;i++)
@@ -89,7 +94,7 @@ int main ()
             break;
 
         case ev_avisa:
-            avisa(tempo, ((struct base *)evento), mundo, lef);
+            avisa(tempo, ((struct base *)evento), (struct heroi *)evento, mundo, lef);
             break;
 
         

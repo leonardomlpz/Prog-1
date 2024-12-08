@@ -11,7 +11,7 @@ void *espera(int tempo, struct heroi *heroi, struct base *base,struct mundo *mun
 
 void *desiste(int tempo, struct heroi *heroi, struct base *base,struct mundo *mundo,struct fprio_t *lef);
 
-void *avisa(int tempo, struct base *base,struct mundo *mundo,struct fprio_t *lef);
+void *avisa(int tempo, struct base *base,struct heroi *heroi,struct mundo *mundo,struct fprio_t *lef);
 
 void *entra(int tempo, struct heroi *heroi, struct base *base,struct mundo *mundo,struct fprio_t *lef);
 
