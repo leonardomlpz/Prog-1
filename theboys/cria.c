@@ -68,12 +68,27 @@ void cria_missao(struct mundo *mundo)
     for (int i = 0; i < mundo->NMissoes; i++)
     {
         missao.id = i;
-        missao.coord_x = aleat(0,mundo->TamMundo_x);//mudar tam mundo
-        missao.coord_y = aleat(0,mundo->TamMundo_y);
-        missao.habilidades = cjto_aleat(mundo->NHablidades,aleat(6,10));//mudar para [6..10]
+        missao.coord_x = aleat(0,TAM_MUNDO);
+        missao.coord_y = aleat(0,TAM_MUNDO);
+        missao.habilidades = cjto_aleat(mundo->NHablidades,aleat(6,10));
         missao.perigo = aleat(0,100);
 
         mundo->missoes[i] = missao;
     }
+    return;
+}
+
+void destroi_mundo(struct mundo *mundo)
+{
+    //destroi bases
+    for (int i = 0; i < mundo->NBases; i++)
+    {
+        lista_destroi(mundo->bases[i].espera);
+        cjto_destroi(mundo->bases[i].presentes);
+    }
+    
+    for (int i = 0; i < mundo->NHerois; i++)
+        cjto_destroi(mundo->herois[i].Habilidades);
+
     return;
 }

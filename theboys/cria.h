@@ -27,4 +27,6 @@ void cria_missao(struct mundo *mundo);
 
 void cria_base(struct mundo *mundo);
 
+void destroi_mundo(struct mundo *mundo);
+
 #endif

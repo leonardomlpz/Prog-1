@@ -20,8 +20,6 @@ int main ()
     srand(0);
 
     // iniciar o mundo
-    int t_fim_mundo = T_FIM;//mudar para 525600
-
     struct fprio_t *lef;
     if (! (lef = malloc(sizeof(struct fprio_t))) )
         return 0;
@@ -30,22 +28,15 @@ int main ()
     if (! (mundo = malloc(sizeof(struct mundo))) )
         return 0;
 
-    //tempo final do programa
     mundo->NHablidades = 10;
     mundo->NHerois = mundo->NHablidades * 5;
-    mundo->NMissoes = t_fim_mundo / 100;
-    //tempo da simulacao
-    mundo->Relogio = 0;
+    mundo->NMissoes = T_FIM / 100;
     mundo->NBases = mundo->NHerois / 5;
-    mundo->TamMundo_x = 10000;
-    mundo->TamMundo_y = 10000;
 
-    //cria_base(mundo);
     cria_base(mundo);
     cria_herois(mundo);
     inicia_herois(mundo,lef);
     
-    //cria_missao(mundo);
     // inicializa herois
     for (int i = 0; i < mundo->NHerois;i++)
     {
@@ -56,7 +47,6 @@ int main ()
         temp = itens(&mundo->bases[base_temporaria],&mundo->herois[i]);
         fprio_insere(lef,temp,ev_chega,tempo_aleatorio);
     }
-    // inicializa missoes
 
 
     int tipo,tempo = 0;
@@ -105,8 +95,10 @@ int main ()
         }
     }
     
-
     // destruir o mundo
+    destroi_mundo(mundo);
+    fprio_destroi(lef);
+    free(mundo);
 
     return (0) ;
 }

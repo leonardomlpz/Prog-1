@@ -2,6 +2,12 @@
 #define ESTRUTURAS
 #include "conjunto.h"
 
+struct base_distancias
+{
+    int id;
+    float distancia;
+};
+
 struct evento
 {
     struct base *base;
@@ -24,6 +30,7 @@ struct missao
     struct cjto_t *habilidades;
     int perigo;
     int coord_x,coord_y;
+    int realizda;
 };
 
 struct heroi
@@ -46,8 +53,6 @@ struct mundo
     int NMissoes;
     struct missao missoes[1000 / 100];
     int NHablidades;
-    int TamMundo_x, TamMundo_y;
-    int Relogio;
 };
 
 #endif
