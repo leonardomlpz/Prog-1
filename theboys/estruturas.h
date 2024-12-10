@@ -2,17 +2,17 @@
 #define ESTRUTURAS
 #include "conjunto.h"
 
-struct base_distancias
+typedef struct base_distancias
 {
     int id;
     float distancia;
-};
+}base_dist;
 
-struct evento
+typedef struct evento
 {
     struct base *base;
     struct heroi *heroi;
-};
+}evento_t;
 
 //Espera: fila onde os heróis esperam para poder entrar na base
 typedef struct base
@@ -22,18 +22,21 @@ typedef struct base
     struct cjto_t *presentes;
     struct lista_t *espera;
     int coord_x,coord_y;
+    struct cjto_t *hab_presentes;
+    int missoes_participadas;
+    int qtde_max_fila;
 } base_t;
 //Habilidades: conjunto de habilidades necessárias para cumprir a missão
-struct missao
+typedef struct missao
 {
     int id;
     struct cjto_t *habilidades;
     int perigo;
     int coord_x,coord_y;
     int realizda;
-};
+}missao_t;
 
-struct heroi
+typedef struct heroi
 {
     int id;
     struct cjto_t *Habilidades;
@@ -42,9 +45,9 @@ struct heroi
     int experiencia;
     int base;
     int vivo;
-};
+}heroi_t;
 
-struct mundo
+typedef struct mundo
 {
     int NHerois;
     struct heroi herois[50];
@@ -53,6 +56,10 @@ struct mundo
     int NMissoes;
     struct missao missoes[1000 / 100];
     int NHablidades;
-};
+    int missoes_realizadas;
+    int missoes_total;
+    base_dist bases_ordenadas[10];
+
+}mundo_t;
 
 #endif

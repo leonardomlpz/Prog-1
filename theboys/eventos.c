@@ -36,6 +36,14 @@ void entra(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef
 
     base->presentes->num++;
 
+    //adicao das hab do heroi ao cjto da base
+    struct cjto_t *temporaria;
+    temporaria = cjto_uniao(base->hab_presentes,heroi->Habilidades);
+    //apaga cjto antigo
+    cjto_destroi(base->hab_presentes);
+    //base recebe novo conjunto com habilidades atualizadas
+    base->hab_presentes = temporaria;//TESTAR SE O PONTEIRO AINDA RECEBE ALGO
+
     struct evento *temp;
     temp = itens(base,heroi);
     fprio_insere(lef,temp,ev_sai,tempo + tpb);
@@ -128,6 +136,13 @@ void sai(int tempo, struct heroi *heroi, struct base *base,struct mundo *mundo,s
     cjto_retira(base->presentes,heroi->id);
     base->lotacao--;
 
+    //remove habilidades do heroi da base
+    struct cjto_t *temporario;
+    temporario = cjto_dif(base->hab_presentes,heroi->Habilidades);
+    cjto_destroi(base->hab_presentes);
+    base->hab_presentes = temporario;
+
+
     struct evento *temp;
     temp = itens(nova_base,heroi);
     fprio_insere(lef,temp,ev_viaja,tempo);
@@ -182,7 +197,7 @@ void morre(int tempo, struct heroi *heroi, struct base *base,struct missao *miss
 
     return;
 }
-/*
+
 void bubbleSort(struct base_distancias vetor[], int tamanho) {
     int i, j;
     struct base_distancias temp;
@@ -198,44 +213,93 @@ void bubbleSort(struct base_distancias vetor[], int tamanho) {
     }
 }
 
-int misssao(int tempo,struct mundo *mundo, struct missao *missao)
+//retorna o numero da base se existir
+//retorna -1 se nao existir base capaz de cumprir a missao
+int bmp(mundo_t *mundo, missao_t *missao)
 {
-    float distancia,risco;
-
-    //vetor de distancia de cada base ate a missao
-    struct base_distancias vet_bases_ordenadas[mundo->NBases];
+    float distancia;
 
     for (int i = 0; i < mundo->NBases; i++)
     {
         distancia = sqrt((pow(missao->coord_x - mundo->bases[i].coord_x,2) + (pow(missao->coord_y - mundo->bases[i].coord_y,2))));
-        vet_bases_ordenadas[i].distancia = distancia;
-        vet_bases_ordenadas[i].id = mundo->bases[i].id;
+        mundo->bases_ordenadas[i].distancia = distancia;
     }
-    //ordena o vetor com base nas distancias
-    bubbleSort(vet_bases_ordenadas,mundo->NBases);
 
-    struct cjto_t *herois;
+    bubbleSort(mundo->bases_ordenadas,mundo->NBases);
+
+    int pode_ser_realizada = -1;
+    for (int i = 0; i < mundo->NBases; i++)
+    {
+        if (cjto_contem(mundo->bases[mundo->bases_ordenadas[i].id].hab_presentes,missao->habilidades) == 1)
+            pode_ser_realizada = mundo->bases_ordenadas[i].id;
+            break;
+    }
+    
+    return pode_ser_realizada;
+}
+
+void missao(int tempo, mundo_t *mundo, missao_t *missao, struct fprio_t *lef)
+{
+    evento_t *temporario;
+    float risco;
+    int indice;
+    indice = bmp(mundo,missao);
+    //se o retorno for diferente de -1 pode ser realizada
+    if (indice != -1)
+    {
+        missao->realizda = 1;
+        mundo->missoes_realizadas++;
+
+        for (int i = 0; i < mundo->NHerois; i++)
+        {
+            //testa se o heroi esta na base
+            if (mundo->herois[i].base == mundo->bases[indice].id)
+            {
+                risco = missao->perigo / (mundo->herois[i].paciencia + mundo->herois[indice].experiencia + 1.0);
+                if (risco > (aleat(0,30)))
+                {
+                    temporario->heroi = &mundo->herois[i];
+                    temporario->base = &mundo->bases[indice];
+                    fprio_insere(lef,temporario,ev_morre,tempo);
+                }
+                else
+                    mundo->herois[i].experiencia++;
+            }
+        }
+    }
+    else
+    {
+        //passa como NULL os parametros pois nao sao usados na missao
+        temporario->base = NULL;
+        temporario->heroi = NULL;
+        fprio_insere(lef,temporario,ev_missao,tempo + 24*60);
+    }
+}
+
+void fim(int tempo, mundo_t *mundo)
+{
+    for (int i = 0; i < mundo->NHerois; i++)
+    {
+        if (mundo->herois[i].vivo == 1)
+        {
+            printf ("HEROI %2d VIVO  PAC %3d VEL %4d EXP %4d HABS [ ", i, mundo->herois[i].paciencia, mundo->herois[i].velocidade, mundo->herois[i].experiencia);
+            cjto_imprime(mundo->herois[i].Habilidades);
+            printf (" ]\n");
+        }
+        else
+        {
+            printf ("HEROI %2d MORTO  PAC %3d VEL %4d EXP %4d HABS [ ", i, mundo->herois[i].paciencia, mundo->herois[i].velocidade, mundo->herois[i].experiencia);
+            cjto_imprime(mundo->herois[i].Habilidades);
+            printf (" ]\n");
+        }
+    }
 
     for (int i = 0; i < mundo->NBases; i++)
-        //BMP
-        if (cjto_contem((mundo->bases[vet_bases_ordenadas[i].id].presentes),missao->habilidades))
-        {
-            missao->realizda = 1;
+    {
+        printf ("BASE %2d LOT %2d FILA MAX %2d MISSOES %d\n", mundo->bases[i].id, mundo->bases[i].lotacao, mundo->bases[i].qtde_max_fila, mundo->bases[i].missoes_participadas);
+    }
 
-            herois = mundo->bases[vet_bases_ordenadas->id].presentes;
-            //anda dentro da base bmp
-            for (int i = 0; i < mundo->bases[vet_bases_ordenadas[i].id].lotacao; i++)
-            {
-                
-            }
-
-            
-        }
+    printf ("EVENTOS TRATADOS: %d\n", mundo->missoes_realizadas);
+    
+    printf ("MISSOES CUMPRIDAS: %d/%d (%.1f%%)\n", mundo->missoes_realizadas, mundo->missoes_total, (mundo->missoes_realizadas/mundo->missoes_total)*100);
 }
-*/
-
-// void fim(int tempo)
-// {
-    // 
-    // return;
-// }

@@ -56,8 +56,15 @@ void cria_base(struct mundo *mundo)
         base.presentes = cjto_cria(base.lotacao);
         base.presentes->num = 0;
         base.espera = lista_cria();
+        base.hab_presentes = cjto_cria(base.lotacao);
 
         mundo->bases[i] = base;
+    }
+
+    for (int i = 0; i < mundo->NBases; i++)
+    {
+        mundo->bases_ordenadas[i].id = mundo->bases[i].id;
+        mundo->bases_ordenadas[i].distancia = 0.00;
     }
     return;
 }
