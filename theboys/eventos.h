@@ -3,9 +3,7 @@
 
 int aleat (int min, int max);
 
-int agenda_evento(struct fprio_t *fila, void *item, int tipo, int prio);
-
-evento_t *itens(base_t *base, heroi_t *heroi);
+evento_t *itens(base_t *base, heroi_t *heroi, missao_t *missao);
 
 void chega(int tempo, heroi_t *heroi, base_t *base,struct fprio_t *lef);
 
@@ -25,6 +23,6 @@ void morre(int tempo, heroi_t *heroi, base_t *base,struct missao *missao, struct
 
 void missao(int tempo,mundo_t *mundo, struct missao *missao, struct fprio_t *lef);
 
-void fim(int tempo, mundo_t *mundo);
+void fim(mundo_t *mundo);
 
 #endif

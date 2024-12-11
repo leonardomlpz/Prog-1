@@ -16,7 +16,7 @@ void cria_herois(struct mundo *mundo)
         temp.experiencia = 0;
         temp.paciencia = aleat(0,100);
         temp.velocidade = aleat(50,5000);
-        temp.Habilidades = cjto_aleat(mundo->NHablidades,4);//alterar o 1
+        temp.Habilidades = cjto_aleat(mundo->NHablidades,aleat(1,3));//alterar o 1
         temp.vivo = 1;
 
         mundo->herois[i] = temp;
@@ -24,9 +24,24 @@ void cria_herois(struct mundo *mundo)
     return;
 }
 
+void inicia_missoes(mundo_t *mundo, struct fprio_t *lef)
+{
+    struct evento *temporario;
+    int tempo;
+
+    for (int i = 0; i < mundo->NMissoes; i++)
+    {
+        tempo = aleat(0,T_FIM);
+        printf("tempo missao %d:\n", tempo);
+        temporario = itens(&mundo->bases[1],&mundo->herois[1],&mundo->missoes[i]);
+        fprio_insere(lef,temporario,ev_missao,tempo);
+    }
+}
+
 void inicia_herois(struct mundo *mundo, struct fprio_t *lef)
 {
     struct heroi temp;
+    struct evento *temporario;
     int tempo;
     for (int i = 0; i < mundo->NHerois; i++)
     {
@@ -37,9 +52,9 @@ void inicia_herois(struct mundo *mundo, struct fprio_t *lef)
         tempo = aleat(0,4320);
 
         printf("id:%2d base id:%2d\n", mundo->herois[i].id,temp.base);
+        cjto_imprime(mundo->herois[i].Habilidades);printf("\n");///////
 
-        struct evento *temporario;
-        temporario = itens(&mundo->bases[temp.base],&mundo->herois[i]);
+        temporario = itens(&mundo->bases[temp.base],&mundo->herois[i],NULL);
         fprio_insere(lef,temporario,ev_chega,tempo);
     }
 }
@@ -77,8 +92,10 @@ void cria_missao(struct mundo *mundo)
         missao.id = i;
         missao.coord_x = aleat(0,TAM_MUNDO);
         missao.coord_y = aleat(0,TAM_MUNDO);
-        missao.habilidades = cjto_aleat(mundo->NHablidades,aleat(6,10));
+        missao.habilidades = cjto_aleat(10,aleat(6,10));
         missao.perigo = aleat(0,100);
+        missao.tentativas = 0;
+        missao.realizda = 0;
 
         mundo->missoes[i] = missao;
     }

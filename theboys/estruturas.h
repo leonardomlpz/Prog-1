@@ -8,12 +8,6 @@ typedef struct base_distancias
     float distancia;
 }base_dist;
 
-typedef struct evento
-{
-    struct base *base;
-    struct heroi *heroi;
-}evento_t;
-
 //Espera: fila onde os heróis esperam para poder entrar na base
 typedef struct base
 {
@@ -34,7 +28,15 @@ typedef struct missao
     int perigo;
     int coord_x,coord_y;
     int realizda;
+    int tentativas;
 }missao_t;
+
+typedef struct evento
+{
+    struct base *base;
+    struct heroi *heroi;
+    missao_t *missao;
+}evento_t;
 
 typedef struct heroi
 {
@@ -59,7 +61,8 @@ typedef struct mundo
     int missoes_realizadas;
     int missoes_total;
     base_dist bases_ordenadas[10];
-
+    int tentativas_min,tentativas_max;
+    int NHerois_mortos;
 }mundo_t;
 
 #endif
