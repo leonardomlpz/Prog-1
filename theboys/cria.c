@@ -71,7 +71,7 @@ void cria_base(struct mundo *mundo)
         base.presentes = cjto_cria(base.lotacao);
         base.presentes->num = 0;
         base.espera = lista_cria();
-        base.hab_presentes = cjto_cria(base.lotacao);
+        base.hab_presentes = cjto_cria(base.lotacao*3);
 
         mundo->bases[i] = base;
     }

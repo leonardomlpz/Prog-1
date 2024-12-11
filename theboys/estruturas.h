@@ -19,6 +19,7 @@ typedef struct base
     struct cjto_t *hab_presentes;
     int missoes_participadas;
     int qtde_max_fila;
+    float distancia_missao;
 } base_t;
 //Habilidades: conjunto de habilidades necessárias para cumprir a missão
 typedef struct missao
