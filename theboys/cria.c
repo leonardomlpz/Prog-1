@@ -32,7 +32,7 @@ void inicia_missoes(mundo_t *mundo, struct fprio_t *lef)
     for (int i = 0; i < mundo->NMissoes; i++)
     {
         tempo = aleat(0,T_FIM);
-        printf("tempo missao %d:\n", tempo);
+
         temporario = itens(&mundo->bases[1],&mundo->herois[1],&mundo->missoes[i]);
         fprio_insere(lef,temporario,ev_missao,tempo);
     }
@@ -51,8 +51,7 @@ void inicia_herois(struct mundo *mundo, struct fprio_t *lef)
         mundo->herois[i] = temp;
         tempo = aleat(0,4320);
 
-        printf("id:%2d base id:%2d\n", mundo->herois[i].id,temp.base);
-        cjto_imprime(mundo->herois[i].Habilidades);printf("\n");///////
+        //cjto_imprime(mundo->herois[i].Habilidades);printf("\n");///////
 
         temporario = itens(&mundo->bases[temp.base],&mundo->herois[i],NULL);
         fprio_insere(lef,temporario,ev_chega,tempo);
@@ -72,15 +71,15 @@ void cria_base(struct mundo *mundo)
         base.presentes->num = 0;
         base.espera = lista_cria();
         base.hab_presentes = cjto_cria(base.lotacao*3);
+        base.hab_presentes->num = 0;
+
+        base.distancia_missao = 0;
+        base.qtde_max_fila = 0;
+        base.missoes_participadas = 0;
 
         mundo->bases[i] = base;
     }
 
-    for (int i = 0; i < mundo->NBases; i++)
-    {
-        mundo->bases_ordenadas[i].id = mundo->bases[i].id;
-        mundo->bases_ordenadas[i].distancia = 0.00;
-    }
     return;
 }
 

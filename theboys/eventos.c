@@ -67,6 +67,9 @@ void espera(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *le
 
 void avisa(int tempo, struct heroi *heroi,struct base *base,struct fprio_t *lef)
 {
+    if (heroi->vivo == 0)
+        return;
+
     struct evento *temp;
     
     printf ("%6d: AVISA  PORTEIRO BASE %d (%2d/%2d) FILA [ ", tempo, base->id, base->presentes->num, base->lotacao);
@@ -138,7 +141,7 @@ void sai(int tempo, struct heroi *heroi, struct base *base,struct mundo *mundo,s
 {
     //escolhe uma nova base aleatoria
     struct base *nova_base;
-    nova_base = &mundo->bases[aleat(0,mundo->NBases -1)];
+    nova_base = &mundo->bases[aleat(0,9)];//mundo->NBases -1
 
     base->presentes->num = cjto_retira(base->presentes,heroi->id);
 
@@ -188,28 +191,30 @@ void viaja(int tempo, struct heroi *heroi, struct base *base, struct mundo *mund
 
 void morre(int tempo, struct heroi *heroi, struct base *base,struct missao *missao, struct fprio_t *lef)
 {
-    
 
     //retira H do conjunto de heróis presentes em B
     cjto_retira(base->presentes,heroi->id);
+    
+    base->presentes = cjto_dif(base->presentes,heroi->Habilidades);//testar vazamentos
+
     //muda o status de H para morto 
     heroi->vivo = 0;
     //cria e insere na LEF o evento AVISA (agora, B)
     struct evento *temp;
-    temp = itens(base,heroi,NULL);
-    fprio_insere(lef,temp,ev_morre,tempo);
+    temp = itens(base,heroi,missao);
+    fprio_insere(lef,temp,ev_avisa,tempo);
 
     printf ("%6d: MORRE HEROI %2d MISSAO %d\n", tempo, heroi->id, missao->id);
 
     return;
 }
 
-void bubbleSort(struct base_distancias vetor[], int tamanho) {
+void bubbleSort(base_t vetor[], int tamanho) {
     int i, j;
-    struct base_distancias temp;
+    base_t temp;
     for (i = 0; i < tamanho - 1; i++) {
         for (j = 0; j < tamanho - i - 1; j++) {
-            if (vetor[j].distancia > vetor[j + 1].distancia) {
+            if (vetor[j].distancia_missao > vetor[j + 1].distancia_missao) {
                 // Troca os elementos se estiverem na ordem errada
                 temp = vetor[j];
                 vetor[j] = vetor[j + 1];
@@ -227,27 +232,21 @@ int bmp(mundo_t *mundo, missao_t *missao)
 
     for (int i = 0; i < mundo->NBases; i++)
     {
-        mundo->bases_ordenadas[i].id = mundo->bases->id;
-    }
-
-    for (int i = 0; i < mundo->NBases; i++)
-    {
         distancia = sqrt((pow(missao->coord_x - mundo->bases[i].coord_x,2) + (pow(missao->coord_y - mundo->bases[i].coord_y,2))));
-        mundo->bases_ordenadas[i].distancia = distancia;
+        mundo->bases[i].distancia_missao = distancia;
     }
 
-    bubbleSort(mundo->bases_ordenadas,mundo->NBases);
-
+    bubbleSort(mundo->bases,mundo->NBases);
     int pode_ser_realizada = -1;
     for (int i = 0; i < mundo->NBases; i++)
     {
-        if (cjto_contem(mundo->bases[mundo->bases_ordenadas[i].id].hab_presentes,missao->habilidades) == 1)
+        if (cjto_contem(missao->habilidades,mundo->bases[i].hab_presentes) == 1)
         {
-            pode_ser_realizada = mundo->bases_ordenadas[i].id;
+            pode_ser_realizada = mundo->bases[i].id;
             break;
         }
     }
-    
+
     return pode_ser_realizada;
 }
 

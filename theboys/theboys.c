@@ -17,7 +17,7 @@
 // programa principal
 int main ()
 {
-    srand(0);
+    srand(time(NULL));
 
     // iniciar o mundo
     struct fprio_t *lef;

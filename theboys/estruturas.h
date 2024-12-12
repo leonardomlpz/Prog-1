@@ -61,7 +61,6 @@ typedef struct mundo
     int NHablidades;
     int missoes_realizadas;
     int missoes_total;
-    base_dist bases_ordenadas[10];
     int tentativas_min,tentativas_max;
     int NHerois_mortos;
 }mundo_t;
