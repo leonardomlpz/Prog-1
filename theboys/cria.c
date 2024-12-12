@@ -77,6 +77,9 @@ void cria_base(struct mundo *mundo)
         base.qtde_max_fila = 0;
         base.missoes_participadas = 0;
 
+        printf("base id:%d esp tam:%d qtde presentes:%d cap:%d\n", base.id, base.espera->tamanho,base.presentes->num,base.presentes->cap);
+
+
         mundo->bases[i] = base;
     }
 

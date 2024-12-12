@@ -56,7 +56,9 @@ void espera(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *le
 {
     printf("%6d: ESPERA HEROI %2d BASE %d (%2d)\n", tempo, heroi->id, base->id, base->espera->tamanho);
     //adiciona H ao fim da fila de espera B
-    lista_insere(base->espera,heroi->id,0);
+
+
+    base->espera->tamanho = lista_insere(base->espera,heroi->id,0);
 
     //cria e insere na LEF o evento AVISA(agora,b)
     struct evento *temp;
@@ -104,11 +106,11 @@ void chega(int tempo, struct heroi *heroi, struct base *base,struct fprio_t *lef
     heroi->base = base->id;
 
     if (base->espera->tamanho == 0 && base->lotacao > base->presentes->num)
-        esperar = 1;
+        esperar = 0;
     else
         esperar = (heroi->paciencia) > (10 * base->espera->tamanho);
     
-    if (esperar == 1)
+    if (esperar == 0)
     {
         fprio_insere(lef,temp,ev_espera,tempo);
 
@@ -240,7 +242,8 @@ int bmp(mundo_t *mundo, missao_t *missao)
     int pode_ser_realizada = -1;
     for (int i = 0; i < mundo->NBases; i++)
     {
-        if (cjto_contem(missao->habilidades,mundo->bases[i].hab_presentes) == 1)
+        //if (mundo->bases[i].hab_presentes->num > missao->habilidades->num)//////////
+        if (cjto_contem(mundo->bases[i].hab_presentes,missao->habilidades) == 1)
         {
             pode_ser_realizada = mundo->bases[i].id;
             break;
